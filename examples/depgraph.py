@@ -86,6 +86,7 @@ if __name__ == "__main__":
 
     dot = Digraph(engine="dot")
     dot.attr(rankdir="LR")
+    dot.attr(splines="ortho")
     dot.node_attr['shape'] = 'box'
 
     for view, tables in result_dict.items():
