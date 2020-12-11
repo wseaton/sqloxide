@@ -81,7 +81,7 @@ if __name__ == "__main__":
         try:
             tables = get_tables_in_query(SQL=sql)
             result_dict[pretty_filename] = list(set(tables.copy()))
-        except:
+        except ValueError:
             print(f"File: {_f} failed to parse.")
 
     dot = Digraph(engine="dot")
