@@ -1,0 +1,20 @@
+[package]
+name = "sqloxide"
+version = "0.1.0"
+authors = ["Will Eaton <me@wseaton.com>"]
+edition = "2018"
+
+[lib]
+name = "sqloxide"
+crate-type = ["cdylib"]
+
+[dependencies]
+serde_json = { version = "1.0"}
+
+[dependencies.pyo3]
+version = "0.12.4"
+features = ["extension-module"]
+
+[dependencies.sqlparser]
+version = "0.6.1"
+features = ["json_example"]
