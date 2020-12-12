@@ -94,7 +94,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*"
 name = "graphviz"
 version = "0.15"
 description = "Simple Python interface for Graphviz"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
 
@@ -419,7 +419,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4.0"
-content-hash = "ee4b5533f1c0e54c670618334dc57e4a9384ab9c0a03085646ac046f419a225a"
+content-hash = "99f07339b6a08f70cfe59715c8a06963b6f25d41cd0d891fc371fa0972942d21"
 
 [metadata.files]
 appdirs = [

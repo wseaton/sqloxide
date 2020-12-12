@@ -1,7 +1,7 @@
 
 # sqloxide
 
-This project wraps the rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package.
+This project wraps rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package.
 
 
 ## Usage:
