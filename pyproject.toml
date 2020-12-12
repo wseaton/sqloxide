@@ -1,19 +1,21 @@
 [tool.poetry]
 name = "sqloxide"
 version = "0.1.0"
-description = ""
+repository = "https://github.com/wseaton/sqloxide"
+license = "MIT"
+description = "Python bindings for sqlparser-rs"
 authors = ["Will Eaton <me@wseaton.com>"]
 build = "build.py"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0"
+python = ">=3.6.0,<4.0"
 
 [tool.poetry.dev-dependencies]
 setuptools-rust = "^0.11.5"
 pytest = "^6.1.2"
 black = "^20.8b1"
 isort = "^5.6.4"
-ipython = "^7.19.0"
+ipython = "^7"
 graphviz = "^0.15"
 
 [build-system]
