@@ -14,7 +14,7 @@ from graphviz import Digraph
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--path", "-p", type=str, help="The path to process queries for.")
-
+parser.add_argument("--dialect", "-d", type=str, help="The dialect to use.")
 
 def get_sql_files(path: str) -> List[str]:
     return glob(path + "/**/*.sql")
@@ -50,9 +50,9 @@ def get_key_recursive(search_dict, field):
     return fields_found
 
 
-def get_tables_in_query(SQL: str) -> List[str]:
+def get_tables_in_query(SQL: str, dialect: str) -> List[str]:
 
-    res = sqloxide.parse_sql(sql=SQL)
+    res = sqloxide.parse_sql(sql=SQL, dialect=dialect)
     parse_data = json.loads(res)
     tables = get_key_recursive(parse_data[0]["Query"], "Table")
 
@@ -69,6 +69,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     files = get_sql_files(args.path)
+    print(f'Parsing using dialect: {args.dialect}')
 
     result_dict = dict()
 
@@ -79,7 +80,7 @@ if __name__ == "__main__":
             sql = f.read()
 
         try:
-            tables = get_tables_in_query(SQL=sql)
+            tables = get_tables_in_query(SQL=sql, dialect=args.dialect)
             result_dict[pretty_filename] = list(set(tables.copy()))
         except ValueError:
             print(f"File: {_f} failed to parse.")

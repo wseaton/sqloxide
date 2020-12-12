@@ -6,12 +6,23 @@ use pyo3::Python;
 use sqlparser::dialect::*;
 use sqlparser::parser::Parser;
 
+fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
+    match dialect {
+        "generic" => Box::new(GenericDialect {}),
+        "ansi" => Box::new(AnsiDialect {}),
+        "ms" => Box::new(MsSqlDialect {}),
+        "postgres" => Box::new(PostgreSqlDialect {}),
+        _ => Box::new(GenericDialect {})
+    }
+}
+
+
 
 #[pyfunction]
-fn parse_sql(_py: Python, sql: &str) -> PyResult<String> {
-    let dialect = GenericDialect {};
+fn parse_sql(_py: Python, dialect: &str, sql: &str) -> PyResult<String> {
+    let chosen_dialect = string_to_dialect(dialect);
     let parse_result =
-        Parser::parse_sql(&dialect, sql);
+        Parser::parse_sql(&*chosen_dialect, sql);
 
     let json_output = match parse_result {
         Ok(statements) => serde_json::to_string(&statements).unwrap_or("[]".to_string()),

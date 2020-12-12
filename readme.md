@@ -18,7 +18,7 @@ INNER JOIN call_outcome ON call.call_outcome_id = call_outcome.id
 ORDER BY call.start_time ASC;
 """
 
-output = parse_sql(sql=sql)
+output = parse_sql(sql=sql, dialect='ansi')
 
 print(output)
 
@@ -260,7 +260,4 @@ poetry run python ./examples/depgraph.py --path {path/to/folder/with/queries}
 ```
 
 ## TO-DO:
-
-- add native python error handling
-- support dialects
 - publish wheels
