@@ -1,10 +1,18 @@
 
 # sqloxide
 
-This project wraps rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package.
+`sqloxide` wraps rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package.
 
+## Installation
 
-## Usage:
+The project provides `manylinux2014` wheels on pypi so should be compatible with most linux distributions.
+
+To install:
+```sh
+pip install sqloxide
+```
+
+## Usage
 
 ```python 
 from sqloxide import parse_sql
@@ -77,11 +85,14 @@ print(output)
 ```
 ## Benchmarks:
 
-We run 3 seperate benchmarks:
+We run 3 benchmarks, comparing to some python native sql parsing libraries:
 
 * `test_sqloxide` - parse query and get a python object back from rust 
 * `test_sqlparser` - testing [sqlparse](https://pypi.org/project/sqlparse/), query -> AST
-* `test_mozsqlparser` - full roundtrip as in the docs, query -> JSON
+* `test_mozsqlparser` - testing [moz-sql-parser](https://pypi.org/project/moz-sql-parser/), full roundtrip as in the docs, query -> JSON
+
+
+To run them on your machine:
 
 ```
 poetry run pytest tests/benchmark.py
@@ -110,6 +121,3 @@ poetry run python ./examples/depgraph.py --path {path/to/folder/with/queries}
 1) Install `rustup`
 
 2) `poetry install` will automatically create the venv, compile the package and install it into the venv via the build script.
-
-## TO-DO:
-- publish wheels
