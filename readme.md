@@ -77,31 +77,39 @@ print(output)
 ```
 ## Benchmarks:
 
-We run 4 seperate benchmarks (on an Intel Skylake, Lenovo P50):
+We run 3 seperate benchmarks:
 
-* `test_sqloxide` - get a JSON string back from rust, no serialization back to python dict
-* `test_sqloxide_json` - parse in rust + python `json.loads`
+* `test_sqloxide` - parse query and get a python object back from rust 
 * `test_sqlparser` - testing [sqlparse](https://pypi.org/project/sqlparse/), query -> AST
 * `test_mozsqlparser` - full roundtrip as in the docs, query -> JSON
 
+```
+poetry run pytest tests/benchmark.py
+```
 
 ```
------------------------------------------------------------------------------------------------- benchmark: 4 tests -----------------------------------------------------------------------------------------------
-Name (time in us)              Min                    Max                   Mean                 StdDev                 Median                   IQR            Outliers          OPS            Rounds  Iterations
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-test_sqloxide              33.6520 (1.0)         145.6850 (1.0)          39.4984 (1.0)          12.3347 (1.0)          34.4590 (1.0)          1.2980 (1.0)     1989;2911  25,317.4531 (1.0)       16013           1
-test_sqloxide_json         55.1870 (1.64)        194.4629 (1.33)         68.8028 (1.74)         19.8281 (1.61)         58.0300 (1.68)        16.0275 (12.35)     776;620  14,534.2891 (0.57)       4956           1
-test_sqlparser          2,448.9640 (72.77)    10,234.5070 (70.25)     2,833.4313 (71.74)       615.8370 (49.93)     2,703.3210 (78.45)      219.5430 (169.14)      14;21     352.9290 (0.01)        249           1
-test_mozsqlparser      13,057.7260 (388.02)   44,944.5860 (308.51)   19,930.3933 (504.59)   10,254.2060 (831.33)   15,520.3370 (450.40)   2,414.8133 (>1000.0)     11;11      50.1746 (0.00)         59           1
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------- benchmark: 3 tests -----------------------------------------------------------------------------------------------
+Name (time in us)             Min                    Max                   Mean                 StdDev                 Median                   IQR            Outliers          OPS            Rounds  Iterations
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+test_sqloxide             38.1560 (1.0)          77.6420 (1.0)          39.1003 (1.0)           1.8152 (1.0)          38.7980 (1.0)          0.2990 (1.0)       395;615  25,575.2524 (1.0)        7712           1
+test_sqlparser         2,012.0290 (52.73)     9,291.2800 (119.67)    2,126.9194 (54.40)       406.3374 (223.85)    2,061.9015 (53.14)       72.8010 (243.47)       9;27     470.1636 (0.02)        398           1
+test_mozsqlparser     10,825.9870 (283.73)   46,720.8870 (601.75)   18,024.9295 (460.99)   10,937.3574 (>1000.0)  13,128.5660 (338.38)   3,099.9100 (>1000.0)     13;13      55.4787 (0.00)         64           1
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 ## Example:
 
+The `depgraph` example reads a bunch of `.sql` files from disk using glob, and builds a dependency graph of all of the objects using graphviz.
+
 ```
-poetry build
 poetry run python ./examples/depgraph.py --path {path/to/folder/with/queries} 
 ```
+
+## Develop
+
+1) Install `rustup`
+
+2) `poetry install` will automatically create the venv, compile the package and install it into the venv via the build script.
 
 ## TO-DO:
 - publish wheels

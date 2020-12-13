@@ -53,8 +53,7 @@ def get_key_recursive(search_dict, field):
 def get_tables_in_query(SQL: str, dialect: str) -> List[str]:
 
     res = sqloxide.parse_sql(sql=SQL, dialect=dialect)
-    parse_data = json.loads(res)
-    tables = get_key_recursive(parse_data[0]["Query"], "Table")
+    tables = get_key_recursive(res[0]["Query"], "Table")
 
     results = list()
 

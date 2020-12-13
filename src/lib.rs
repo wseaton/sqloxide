@@ -3,6 +3,8 @@ use pyo3::wrap_pyfunction;
 use pyo3::exceptions::PyValueError;
 use pyo3::Python;
 
+use pythonize::pythonize;
+
 use sqlparser::dialect::*;
 use sqlparser::parser::Parser;
 
@@ -19,17 +21,21 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
 
 
 #[pyfunction]
-fn parse_sql(_py: Python, dialect: &str, sql: &str) -> PyResult<String> {
+fn parse_sql(_py: Python, dialect: &str, sql: &str) -> PyResult<PyObject> {
+    
+    let gil = Python::acquire_gil();
+    let py = gil.python();
+    
     let chosen_dialect = string_to_dialect(dialect);
     let parse_result =
         Parser::parse_sql(&*chosen_dialect, sql);
 
-    let json_output = match parse_result {
-        Ok(statements) => serde_json::to_string(&statements).unwrap_or("[]".to_string()),
+    let output = match parse_result {
+        Ok(statements) => pythonize(py, &statements).unwrap(),
         Err(_e) => return Err(PyValueError::new_err("Parsing failed."))
     };
 
-    Ok(json_output)
+    Ok(output)
 }
 
 #[pymodule]

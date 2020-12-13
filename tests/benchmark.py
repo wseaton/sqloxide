@@ -19,21 +19,12 @@ def bench_parse_sql():
     return parse_sql(sql=TEST_SQL, dialect="ansi")
 
 
-def bench_parse_sql_json():
-    return json.loads(parse_sql(sql=TEST_SQL, dialect="ansi"))
-
-
 def bench_sqlparser():
     return sqlparse.parse(TEST_SQL)[0]
 
 
 def bench_mozsqlparser():
     return json.dumps(moz_sql_parser.parse(TEST_SQL))
-
-
-def test_sqloxide_json(benchmark):
-    benchmark(bench_parse_sql_json)
-
 
 def test_sqloxide(benchmark):
     benchmark(bench_parse_sql)

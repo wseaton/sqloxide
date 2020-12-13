@@ -1,6 +1,4 @@
 from sqloxide import parse_sql
-import json
-
 
 def test_parse_sql():
 
@@ -13,7 +11,7 @@ def test_parse_sql():
     ORDER BY call.start_time ASC;
     """
 
-    ast = json.loads(parse_sql(sql=sql, dialect='ansi'))[0]
+    ast = parse_sql(sql=sql, dialect='ansi')[0]
 
     assert isinstance(ast, dict)
     assert len(ast['Query'].keys()) > 0
