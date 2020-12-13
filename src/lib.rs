@@ -19,9 +19,11 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
 }
 
 
-
+/// Function to parse SQL statements from a string. Returns a list with
+/// one item per query statement.
 #[pyfunction]
-fn parse_sql(_py: Python, dialect: &str, sql: &str) -> PyResult<PyObject> {
+#[text_signature = "(sql, dialect)"]
+fn parse_sql(_py: Python, sql: &str, dialect: &str)  -> PyResult<PyObject> {
     
     let gil = Python::acquire_gil();
     let py = gil.python();
