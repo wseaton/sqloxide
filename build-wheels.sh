@@ -12,5 +12,5 @@ for PYBIN in /opt/python/cp{36,37,38,39}*/bin; do
 done
 
 for whl in dist/*.whl; do
-    auditwheel repair "$whl" -w dist/ --plat linux_x86_64
+    auditwheel repair "$whl" -w dist/
 done

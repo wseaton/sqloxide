@@ -6,6 +6,13 @@ license = "MIT"
 description = "Python bindings for sqlparser-rs"
 authors = ["Will Eaton <me@wseaton.com>"]
 build = "build.py"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Rust",
+    "Topic :: Database",
+    "License :: OSI Approved :: MIT License"
+]
+
 
 [tool.poetry.dependencies]
 python = ">=3.6.0,<4.0"
