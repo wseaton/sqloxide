@@ -1,16 +1,21 @@
-
 # sqloxide
 
-`sqloxide` wraps rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package.
+`sqloxide` wraps rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package using `pyO3`.
+
+This package is currently in an *alpha* state, and while the upstream rust crate it wraps is pretty mature, I wouldn't use this in any production code yet 😉
+
+The original goal of this project was to have a very fast, efficient, and accurate SQL parser I could use for building data lineage graphs across large code bases (think hundreds of auto-generated .sql files). Most existing sql parsing approaches for python are either very slow or not accurate (especially in regards to deeply nested queries, sub-selects and/or table aliases).
 
 ## Installation
 
-The project provides `manylinux2014` wheels on pypi so should be compatible with most linux distributions.
+The project provides `manylinux2014` wheels on pypi so it should be compatible with most linux distributions.
 
-To install:
+To install from pypi:
 ```sh
 pip install sqloxide
 ```
+
+You can also compile the package yourself if an architecture/OS target you need is not posted (eg. darwin, windows).
 
 ## Usage
 
@@ -83,7 +88,7 @@ print(output)
             },
             { # OUTPUT TRUNCATED
 ```
-## Benchmarks:
+## Benchmarks
 
 We run 3 benchmarks, comparing to some python native sql parsing libraries:
 
@@ -108,7 +113,7 @@ test_mozsqlparser     10,825.9870 (283.73)   46,720.8870 (601.75)   18,024.9295 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-## Example:
+## Example
 
 The `depgraph` example reads a bunch of `.sql` files from disk using glob, and builds a dependency graph of all of the objects using graphviz.
 
