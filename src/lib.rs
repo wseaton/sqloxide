@@ -34,7 +34,10 @@ fn parse_sql(_py: Python, sql: &str, dialect: &str)  -> PyResult<PyObject> {
 
     let output = match parse_result {
         Ok(statements) => pythonize(py, &statements).unwrap(),
-        Err(_e) => return Err(PyValueError::new_err("Parsing failed."))
+        Err(_e) => {
+            let msg = _e.to_string();
+            return Err(PyValueError::new_err(format!("Parsing failed.\n\t{}", msg)));
+        }
     };
 
     Ok(output)
