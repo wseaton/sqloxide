@@ -19,7 +19,7 @@ python = ">=3.6.0,<4.0"
 
 [tool.poetry.dev-dependencies]
 setuptools-rust = "^0.11.6"
-pytest = "^6.1.2"
+pytest = "^6.2.1"
 black = "^20.8b1"
 isort = "^5.6.4"
 ipython = "^7"
