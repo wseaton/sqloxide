@@ -1,5 +1,7 @@
 # sqloxide
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/wseaton/sqloxide/CI) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/sqloxide)
+
 `sqloxide` wraps rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package using `pyO3`.
 
 This package is currently in an *alpha* state, and while the upstream rust crate it wraps is pretty mature, I wouldn't use this in any production code yet 😉
