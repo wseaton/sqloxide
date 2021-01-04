@@ -261,7 +261,7 @@ mo-kwargs = "3.93.20259"
 
 [[package]]
 name = "moz-sql-parser"
-version = "4.5.20343"
+version = "4.9.21002"
 description = "Extract Parse Tree from SQL"
 category = "dev"
 optional = false
@@ -564,7 +564,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.0,<4.0"
-content-hash = "b634babd0f8282572077b700bad33aac6c48317166c86ad16a2a08da98b07db4"
+content-hash = "64f3ef6a6762118767428ec7bc045401c0fafe1fd64d2d4e7efd8d628755f848"
 
 [metadata.files]
 appdirs = [
@@ -650,7 +650,7 @@ mo-logs = [
     {file = "mo-logs-4.3.20340.tar.gz", hash = "sha256:6d6275375f68fca7c85094f90b0a3a54f7c081ffdded18afd9352b258b7de73a"},
 ]
 moz-sql-parser = [
-    {file = "moz-sql-parser-4.5.20343.tar.gz", hash = "sha256:f47d4d9c9d8318f03f882e4d65510a8fb3e86e4200b7f36c2703c8b8f3e0c572"},
+    {file = "moz-sql-parser-4.9.21002.tar.gz", hash = "sha256:a2cb1d47c68cd84f4816f21e0e1802b546b39fe971684bb3100dd74944a4cb3c"},
 ]
 mypy-extensions = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
