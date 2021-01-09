@@ -96,9 +96,8 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
+        path:
+          io
      
-      - name: make output dir
-        run: mkdir $GITHUB_WORKSPACE/io  
-
       - name: build wheels
-        run: build-wheels.sh
+        run: io/build-wheels.sh
