@@ -96,8 +96,8 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
-        path:
-          io
+        with:
+          path: io
      
       - name: build wheels
         run: io/build-wheels.sh
