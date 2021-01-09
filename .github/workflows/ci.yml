@@ -93,4 +93,4 @@ jobs:
     runs-on: quay.io/pypa/manylinux2014_x86_64
 
     - name: build
-    run: build-wheels.sh
+      run: build-wheels.sh
