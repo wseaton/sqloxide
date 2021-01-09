@@ -91,10 +91,13 @@ jobs:
   
   manylinux-build:
     runs-on: ubuntu-latest
-    container: 
-      image: quay.io/pypa/manylinux2014_x86_64
+    container: quay.io/pypa/manylinux2014_x86_64
     needs: lint
     steps:
-      - uses: actions/checkout@v2
-      - name: build
-        run: build-wheels.sh
+      - name: checkout repo
+        uses: actions/checkout@v2
+        with:
+          path: io
+      
+      - name: build wheels
+        run: io/build-wheels.sh
