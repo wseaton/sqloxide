@@ -95,5 +95,6 @@ jobs:
       image: quay.io/pypa/manylinux2014_x86_64
     needs: lint
     steps:
+      - uses: actions/checkout@v2
       - name: build
         run: build-wheels.sh
