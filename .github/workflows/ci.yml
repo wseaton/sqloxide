@@ -90,6 +90,7 @@ jobs:
         run: poetry run pytest tests/benchmark.py
   
   manylinux-build:
+    runs-on: ubuntu-latest
     container: 
       image: quay.io/pypa/manylinux2014_x86_64
     needs: lint
