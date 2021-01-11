@@ -26,7 +26,7 @@ ipython = "^7"
 graphviz = "^0.15"
 sqlparse = "^0.4.1"
 pytest-benchmark = {extras = ["histogram"], version = "^3.2.3"}
-moz-sql-parser = "^4.5.20343"
+moz-sql-parser = "^4.10.21011"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "setuptools>=41.0.0", "wheel", "setuptools_rust>=0.10.2"]
