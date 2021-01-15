@@ -46,7 +46,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
-        os: [macos-latest, windows-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
       - name: Checkout
@@ -88,6 +88,20 @@ jobs:
 
       - name: Benchmark
         run: poetry run pytest tests/benchmark.py
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/sqloxide*.whl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: PyPi publish
+        if: github.event_name == 'release' && github.event.action == 'created' && matrix.os != 'ubuntu-latest'
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI }}
+        run: poetry publish
   
   manylinux-build:
     runs-on: ubuntu-latest
@@ -107,66 +121,3 @@ jobs:
         with:
           name: manylinux-wheels
           path: io/dist/*manylinux2014*.whl
-
-
-  native-publish:
-    needs: native-build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
-        os: [macos-latest, windows-latest]
-
-    steps:
-      - uses: actions/checkout@v1
-
-      - uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install latest nightly
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          override: true
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
-      - name: Build Python package
-        run:  poetry run python setup.py bdist_wheel
-
-      - name: List wheels
-        if: matrix.os == 'windows-latest'
-        run: dir dist/ 
-
-      - name: List wheels
-        if:  matrix.os != 'windows-latest'
-        run: find dist/
-
-      # Note: Windows doesn't support glob
-      # https://stackoverflow.com/a/52481267/270334
-      - name: Install wheels
-        if:  matrix.os == 'windows-latest'
-        run: pip install --find-links=dist/ sqloxide
-
-      - name: Install wheels
-        if:  matrix.os != 'windows-latest'
-        run: pip install dist/sqloxide*.whl
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: dist/sqloxide*.whl
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: PyPi publish
-        if: github.event_name == 'release' && github.event.action == 'created'
-        env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI }}
-        run: poetry publish
