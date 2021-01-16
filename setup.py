@@ -9,7 +9,7 @@ package_data = \
 
 setup_kwargs = {
     'name': 'sqloxide',
-    'version': '0.1.1',
+    'version': '0.1.2',
     'description': 'Python bindings for sqlparser-rs',
     'long_description': None,
     'author': 'Will Eaton',
