@@ -128,27 +128,10 @@ jobs:
     needs: manylinux-build
     steps: 
 
-      - name: Checkout
-        uses: actions/checkout@v1
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          pip install twine
-
-      - name: Add poetry to path
-        run: echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
-
       - uses: actions/download-artifact@v2
         with: 
           name: manylinux-wheels
-          path: ~/dist/
+          path: dist/
 
       - name: Publish packages to PyPI
         uses: pypa/gh-action-pypi-publish@master
@@ -156,4 +139,3 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI }}
-          packages_dir: ~/dist/
