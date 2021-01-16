@@ -13,7 +13,10 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
         "generic" => Box::new(GenericDialect {}),
         "ansi" => Box::new(AnsiDialect {}),
         "ms" => Box::new(MsSqlDialect {}),
+        "mysql" => Box::new(MySqlDialect {}),
         "postgres" => Box::new(PostgreSqlDialect {}),
+        "snowflake" => Box::new(SnowflakeDialect {}),
+        "sqlite" => Box::new(SQLiteDialect {}),
         _ => Box::new(GenericDialect {})
     }
 }
