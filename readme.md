@@ -10,14 +10,12 @@ The original goal of this project was to have a very fast, efficient, and accura
 
 ## Installation
 
-The project provides `manylinux2014` wheels on pypi so it should be compatible with most linux distributions.
+The project provides `manylinux2014` wheels on pypi so it should be compatible with most linux distributions. Native wheels are also now available for OSX and Windows.
 
 To install from pypi:
 ```sh
 pip install sqloxide
 ```
-
-You can also compile the package yourself if an architecture/OS target you need is not posted (eg. darwin, windows).
 
 ## Usage
 
