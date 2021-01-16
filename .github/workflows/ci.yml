@@ -91,13 +91,14 @@ jobs:
 
       - name: archive wheels
         uses: actions/upload-artifact@v2
+        if: matrix.os != 'ubuntu-latest'
         with:
           name: wheels
           path: dist/*.whl
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') && matrix.os != 'ubuntu-latest'
         with:
           files: dist/sqloxide*.whl
         env:
