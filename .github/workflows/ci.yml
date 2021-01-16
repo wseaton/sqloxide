@@ -93,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: /dist/*.whl
+          path: dist/*.whl
 
       - name: Release
         uses: softprops/action-gh-release@v1
