@@ -81,7 +81,7 @@ jobs:
           override: true
 
       - name: Build Python package
-        run: poetry run setup.py bdist_wheel && poetry install
+        run: poetry run python setup.py bdist_wheel && poetry install
 
       - name: pytest
         run: poetry run pytest tests
