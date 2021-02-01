@@ -109,7 +109,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*"
 
 [[package]]
 name = "graphviz"
-version = "0.15"
+version = "0.16"
 description = "Simple Python interface for Graphviz"
 category = "dev"
 optional = false
@@ -574,7 +574,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.0,<4.0"
-content-hash = "0284075c6f0b9ae65fbc021151942c4157be2e3b85abd9e28a9c729413fc242b"
+content-hash = "6d46c101039a25bd4b3c5a2d484eed0a570669a79f18bc6ca1c9ade3a8509f5c"
 
 [metadata.files]
 appdirs = [
@@ -621,8 +621,8 @@ decorator = [
     {file = "decorator-4.4.2.tar.gz", hash = "sha256:e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"},
 ]
 graphviz = [
-    {file = "graphviz-0.15-py2.py3-none-any.whl", hash = "sha256:403b55553b235875fa521023a06d9c29b46f3a956f960d4e0a5b956bca9eb9ce"},
-    {file = "graphviz-0.15.zip", hash = "sha256:2b85f105024e229ec330fe5067abbe9aa0d7708921a585ecc2bf56000bf5e027"},
+    {file = "graphviz-0.16-py2.py3-none-any.whl", hash = "sha256:3cad5517c961090dfc679df6402a57de62d97703e2880a1a46147bb0dc1639eb"},
+    {file = "graphviz-0.16.zip", hash = "sha256:d2d25af1c199cad567ce4806f0449cb74eb30cf451fd7597251e1da099ac6e57"},
 ]
 importlib-metadata = [
     {file = "importlib_metadata-3.4.0-py3-none-any.whl", hash = "sha256:ace61d5fc652dc280e7b6b4ff732a9c2d40db2c0f92bc6cb74e07b73d53a1771"},
