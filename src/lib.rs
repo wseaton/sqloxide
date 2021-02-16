@@ -12,6 +12,7 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
     match dialect {
         "generic" => Box::new(GenericDialect {}),
         "ansi" => Box::new(AnsiDialect {}),
+        "hive" => Box::new(HiveDialect {}),
         "ms" => Box::new(MsSqlDialect {}),
         "mysql" => Box::new(MySqlDialect {}),
         "postgres" => Box::new(PostgreSqlDialect {}),
