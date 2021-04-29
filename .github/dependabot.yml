@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: setuptools-rust
+    versions:
+    - 0.12.0
+  - dependency-name: moz-sql-parser
+    versions:
+    - 4.17.21027
+    - 4.18.21031
