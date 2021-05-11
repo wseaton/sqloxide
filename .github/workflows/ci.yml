@@ -80,7 +80,19 @@ jobs:
           toolchain: nightly
           override: true
 
+
+      - name: Build on macOS universal2
+        if: matrix.platform.os == 'macos-latest'
+        shell: bash
+        env:
+          DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+          MACOSX_DEPLOYMENT_TARGET: '10.9'
+          ARCHFLAGS: -arch x86_64 -arch arm64
+          PYO3_CROSS_LIB_DIR: /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.8/lib
+        run: poetry run python setup.py bdist_wheel && poetry install
+
       - name: Build Python package
+        if:  matrix.os != 'macos-latest'
         run: poetry run python setup.py bdist_wheel && poetry install
 
       - name: pytest
