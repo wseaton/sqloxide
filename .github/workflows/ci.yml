@@ -80,6 +80,9 @@ jobs:
           toolchain: nightly
           override: true
 
+      - name: Install Rust aarch64-apple-darwin target
+        if: matrix.os == 'macos-latest'
+        run: rustup target add aarch64-apple-darwin
 
       - name: Build on macOS universal2
         if: matrix.os == 'macos-latest'
