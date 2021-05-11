@@ -213,7 +213,7 @@ testing = ["Django (<3.1)", "colorama", "docopt", "pytest (<6.0.0)"]
 
 [[package]]
 name = "mo-dots"
-version = "4.19.21059"
+version = "4.22.21108"
 description = "More Dots! Dot-access to Python dicts like Javascript"
 category = "dev"
 optional = false
@@ -244,42 +244,42 @@ mo-future = "3.147.20327"
 
 [[package]]
 name = "mo-kwargs"
-version = "3.93.20259"
+version = "4.22.21108"
 description = "More KWARGS! Let call parameters override kwargs"
 category = "dev"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-mo-dots = ">=3.93.20259"
-mo-future = ">=3.89.20246"
+mo-dots = "4.22.21108"
+mo-future = "3.147.20327"
 
 [[package]]
 name = "mo-logs"
-version = "4.20.21059"
+version = "4.23.21108"
 description = "More Logs! Structured Logging and Exception Handling"
 category = "dev"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-mo-dots = "4.19.21059"
+mo-dots = "4.22.21108"
 mo-future = "3.147.20327"
 mo-imports = "3.149.20327"
-mo-kwargs = "3.93.20259"
+mo-kwargs = "4.22.21108"
 
 [[package]]
 name = "moz-sql-parser"
-version = "4.21.21059"
+version = "4.40.21126"
 description = "Extract Parse Tree from SQL"
 category = "dev"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-mo-dots = "4.19.21059"
+mo-dots = "4.22.21108"
 mo-future = "3.147.20327"
-mo-logs = "4.20.21059"
+mo-logs = "4.23.21108"
 
 [[package]]
 name = "mypy-extensions"
@@ -574,7 +574,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.0,<4.0"
-content-hash = "4a6eadd838d15512b16f36cf64f1e2ba61e05750fc9a042145237845127bcf85"
+content-hash = "0d2334ff9e91de3d20e52688beccf17a52f4b1da0f3f0059cd300a88d523b047"
 
 [metadata.files]
 appdirs = [
@@ -649,7 +649,7 @@ jedi = [
     {file = "jedi-0.18.0.tar.gz", hash = "sha256:92550a404bad8afed881a137ec9a461fed49eca661414be45059329614ed0707"},
 ]
 mo-dots = [
-    {file = "mo-dots-4.19.21059.tar.gz", hash = "sha256:880e61a2db83e7806b0a7c89adf936a6947a0f4925eac9088f4dfd694fe15ab6"},
+    {file = "mo-dots-4.22.21108.tar.gz", hash = "sha256:f9f2f9a6e44e214959aecd55857b6df487b8e86daf51334e2e982d47ea33ed23"},
 ]
 mo-future = [
     {file = "mo-future-3.147.20327.tar.gz", hash = "sha256:4aafcf859e4657bc11b04ee9791321e2d44702604ae01cac7c412468cb6a513f"},
@@ -658,13 +658,13 @@ mo-imports = [
     {file = "mo-imports-3.149.20327.tar.gz", hash = "sha256:32e3dc720c84765224d29ed7e9d6972a369d41d756e6f26ddb5b7aa01241331d"},
 ]
 mo-kwargs = [
-    {file = "mo-kwargs-3.93.20259.tar.gz", hash = "sha256:c7802ad3211f25536a73ae5775efa398ca59f5b23551957f79e53d4ccf179d2e"},
+    {file = "mo-kwargs-4.22.21108.tar.gz", hash = "sha256:9c9d00ab86f1f75013193807d90cad17cbc515384cf3b17b8aff3104a300f7ce"},
 ]
 mo-logs = [
-    {file = "mo-logs-4.20.21059.tar.gz", hash = "sha256:5f008428610042c9104ca87ee4e85602a030be2597ecc760aa163e2d6d51bfce"},
+    {file = "mo-logs-4.23.21108.tar.gz", hash = "sha256:de4136a7ce215ecbfd7a368588be0a3f1fd8a6521dc2d4aae57cc1c3ba299aab"},
 ]
 moz-sql-parser = [
-    {file = "moz-sql-parser-4.21.21059.tar.gz", hash = "sha256:54bb667989e503a2d09718a769c1f3caaa5338f8fddc20e87dfd2591c3cbfa3e"},
+    {file = "moz-sql-parser-4.40.21126.tar.gz", hash = "sha256:b3d37cc8ff118d86009aa12646791549537ec0ae8ac312efd4641289c8eee080"},
 ]
 mypy-extensions = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
