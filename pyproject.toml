@@ -23,7 +23,7 @@ pytest = "^6.2.4"
 black = "^20.8b1"
 isort = "^5.8.0"
 ipython = "^7"
-graphviz = "^0.16"
+graphviz = "^0.17"
 sqlparse = "^0.4.1"
 pytest-benchmark = {extras = ["histogram"], version = "^3.4.1"}
 moz-sql-parser = "^4.40.21126"
