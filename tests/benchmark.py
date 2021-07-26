@@ -2,6 +2,7 @@ import pytest
 
 from sqloxide import parse_sql
 import sqlparse
+import sqlglot
 import json
 import moz_sql_parser
 
@@ -26,6 +27,11 @@ def bench_sqlparser():
 def bench_mozsqlparser():
     return json.dumps(moz_sql_parser.parse(TEST_SQL))
 
+
+def bench_sqlglot():
+    return sqlglot.parse(TEST_SQL)
+
+
 def test_sqloxide(benchmark):
     benchmark(bench_parse_sql)
 
@@ -35,3 +41,7 @@ def test_sqlparser(benchmark):
 
 def test_mozsqlparser(benchmark):
     benchmark(bench_mozsqlparser)
+
+def test_sqlglot(benchmark):
+    benchmark(bench_sqlglot)
+    
