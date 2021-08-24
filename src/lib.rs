@@ -25,7 +25,7 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
 /// Function to parse SQL statements from a string. Returns a list with
 /// one item per query statement.
 #[pyfunction]
-#[pyo3(text_signature = "sql, dialect")]
+#[pyo3(text_signature = "(sql, dialect)")]
 fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
     let chosen_dialect = string_to_dialect(dialect);
     let parse_result = Parser::parse_sql(&*chosen_dialect, sql);
