@@ -28,7 +28,7 @@ sqlparse = "^0.4.1"
 pytest-benchmark = {extras = ["histogram"], version = "^3.4.1"}
 moz-sql-parser = "^4.40.21126"
 bump2version = "^1.0.1"
-sqlglot = "^1.0.1"
+sqlglot = "^1.5.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "setuptools>=41.0.0", "wheel", "setuptools_rust>=0.10.2"]
