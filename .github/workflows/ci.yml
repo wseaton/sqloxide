@@ -47,6 +47,10 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
         os: [macos-latest, windows-latest, ubuntu-latest]
+      exclude:
+        # cpython issue: https://github.com/cython/cython/issues/3572
+        - os: macos-latest
+        python-version: 3.6
 
     steps:
       - name: Checkout
