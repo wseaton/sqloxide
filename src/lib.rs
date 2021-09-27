@@ -2,7 +2,6 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
-
 use pythonize::pythonize;
 
 use sqlparser::dialect::*;
@@ -18,7 +17,10 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
         "postgres" => Box::new(PostgreSqlDialect {}),
         "snowflake" => Box::new(SnowflakeDialect {}),
         "sqlite" => Box::new(SQLiteDialect {}),
-        _ => Box::new(GenericDialect {}),
+        _ => {
+            println!("The dialect you chose was not recognized, falling back to 'generic'");
+            Box::new(GenericDialect {})
+        }
     }
 }
 
@@ -31,10 +33,12 @@ fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
     let parse_result = Parser::parse_sql(&*chosen_dialect, sql);
 
     let output = match parse_result {
-        Ok(statements) => pythonize(py, &statements).unwrap(),
+        Ok(statements) => {
+            pythonize(py, &statements).expect("Internal python serialization failed.")
+        }
         Err(_e) => {
             let msg = _e.to_string();
-            return Err(PyValueError::new_err(format!("Parsing failed.\n\t{}", msg)));
+            return Err(PyValueError::new_err(format!("Query parsing failed.\n\t{}", msg)));
         }
     };
 
