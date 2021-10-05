@@ -505,7 +505,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "sqlglot"
-version = "1.7.2"
+version = "1.8.0"
 description = "An easily customizable SQL parser and transpiler"
 category = "dev"
 optional = false
@@ -582,7 +582,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.0,<4.0"
-content-hash = "ab73edde72bb36b0636b2cea27f72ccdb8f039e1fc9fc69f4d954298770bf8df"
+content-hash = "99d5ecadd0c027c555577f303330278c1cc9b3a976246ce24d6cc52d7664cd0f"
 
 [metadata.files]
 appdirs = [
@@ -797,8 +797,8 @@ six = [
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
 ]
 sqlglot = [
-    {file = "sqlglot-1.7.2-py3-none-any.whl", hash = "sha256:8b3fea132e703c0eeb0434351dbc1769c47320dfd30741b662145624c22b67d3"},
-    {file = "sqlglot-1.7.2.tar.gz", hash = "sha256:de1abe5d643cf00a318a4b21b7a7d9adaa06c5320e47180e6b4f7115540f3f44"},
+    {file = "sqlglot-1.8.0-py3-none-any.whl", hash = "sha256:369c8a0eef5847bc7aae7bf08a1012e539e899ef9c1e2f5cccae43844a90c9ef"},
+    {file = "sqlglot-1.8.0.tar.gz", hash = "sha256:a5bc44fda5a24ff4e3d054c54549ab8768e0c5ebb8647e748607ad4cc7fac721"},
 ]
 sqlparse = [
     {file = "sqlparse-0.4.2-py3-none-any.whl", hash = "sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d"},
