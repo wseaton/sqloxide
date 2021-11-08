@@ -113,16 +113,16 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "graphviz"
-version = "0.16"
+version = "0.18"
 description = "Simple Python interface for Graphviz"
 category = "dev"
 optional = false
-python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
+python-versions = ">=3.6"
 
 [package.extras]
 dev = ["tox (>=3)", "flake8", "pep8-naming", "wheel", "twine"]
-docs = ["sphinx (>=1.8)", "sphinx-rtd-theme"]
-test = ["mock (>=3)", "pytest (>=4)", "pytest-mock (>=2)", "pytest-cov"]
+docs = ["sphinx (>=1.8)", "sphinx-autodoc-typehints", "sphinx-rtd-theme"]
+test = ["pytest (>=6)", "pytest-mock (>=2)", "mock (>=3)", "pytest-cov"]
 
 [[package]]
 name = "importlib-metadata"
@@ -591,7 +591,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.0,<4.0"
-content-hash = "5062b7b5a008868d2db45aae892ee3b0d8d0bd4de195b2d2f32a537ae9e2dc9d"
+content-hash = "ae4d3c3368c1942f9c03dd9bd6ad5ad255c6f6707fe6d72f7228c74d97e8ea7b"
 
 [metadata.files]
 appdirs = [
@@ -638,8 +638,8 @@ decorator = [
     {file = "decorator-5.1.0.tar.gz", hash = "sha256:e59913af105b9860aa2c8d3272d9de5a56a4e608db9a2f167a8480b323d529a7"},
 ]
 graphviz = [
-    {file = "graphviz-0.16-py2.py3-none-any.whl", hash = "sha256:3cad5517c961090dfc679df6402a57de62d97703e2880a1a46147bb0dc1639eb"},
-    {file = "graphviz-0.16.zip", hash = "sha256:d2d25af1c199cad567ce4806f0449cb74eb30cf451fd7597251e1da099ac6e57"},
+    {file = "graphviz-0.18-py3-none-any.whl", hash = "sha256:f8bab3bf3eda40ab259bb96f786811b5dec6fd6957fa70a5b1977534e1ee2a40"},
+    {file = "graphviz-0.18.zip", hash = "sha256:0f04e5f939d3a839b524283d590e941892c56e75e60e0f5238c431264f490022"},
 ]
 importlib-metadata = [
     {file = "importlib_metadata-4.8.1-py3-none-any.whl", hash = "sha256:b618b6d2d5ffa2f16add5697cf57a46c76a56229b0ed1c438322e4e95645bd15"},
