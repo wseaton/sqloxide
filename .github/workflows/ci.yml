@@ -45,12 +45,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
         os: [macos-latest, windows-latest, ubuntu-latest]
         exclude:
           # cpython issue: https://github.com/cython/cython/issues/3572
           - os: macos-latest
-            python-version: 3.6
+            python-version: "3.6"
 
     steps:
       - name: Checkout
@@ -60,6 +60,11 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: add 3.10 packages poetry lacks
+        if: matrix.python-version == '3.10'
+        run: |
+          python -m pip install cleo tomlkit poetry.core requests cachecontrol cachy html5lib pkginfo virtualenv lockfile
 
       - name: Install dependencies
         run: |
@@ -106,6 +111,7 @@ jobs:
         run: poetry run pytest tests
 
       - name: Benchmark
+        if: matrix.python-version != '3.10'
         run: poetry run pytest tests/benchmark.py
 
       - name: archive wheels
