@@ -8,15 +8,16 @@ use sqlparser::dialect::*;
 use sqlparser::parser::Parser;
 
 fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
-    match dialect {
+    match dialect.to_lowercase().as_str() {
         "generic" => Box::new(GenericDialect {}),
         "ansi" => Box::new(AnsiDialect {}),
         "hive" => Box::new(HiveDialect {}),
-        "ms" => Box::new(MsSqlDialect {}),
+        "ms" | "mssql" => Box::new(MsSqlDialect {}),
         "mysql" => Box::new(MySqlDialect {}),
         "postgres" => Box::new(PostgreSqlDialect {}),
         "snowflake" => Box::new(SnowflakeDialect {}),
         "sqlite" => Box::new(SQLiteDialect {}),
+        "clickhouse" => Box::new(ClickHouseDialect {}),
         _ => {
             println!("The dialect you chose was not recognized, falling back to 'generic'");
             Box::new(GenericDialect {})
@@ -26,6 +27,17 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
 
 /// Function to parse SQL statements from a string. Returns a list with
 /// one item per query statement.
+/// 
+/// Available `dialects`: 
+/// - generic
+/// - ansi
+/// - hive
+/// - ms (mssql)
+/// - mysql
+/// - postgres
+/// - snowflake
+/// - sqlite
+/// - clickhouse
 #[pyfunction]
 #[pyo3(text_signature = "(sql, dialect)")]
 fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
