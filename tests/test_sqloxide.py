@@ -22,10 +22,10 @@ def test_parse_sql():
     assert "body" in ast["Query"].keys()
 
 
-def test_thow_exception():
+def test_throw_exception():
 
     sql = """
     SELECT $# as 1;
     """
-    with pytest.raises(ValueError, match=r"found: \$"):
+    with pytest.raises(ValueError, match=r"Query parsing failed.\n\tsql parser error: .+"):
         ast = parse_sql(sql=sql, dialect="ansi")[0]
