@@ -27,5 +27,5 @@ def test_throw_exception():
     sql = """
     SELECT $# as 1;
     """
-    with pytest.raises(ValueError, match=r"Query parsing failed.\n\tsql parser error: $+"):
+    with pytest.raises(ValueError, match=r"Query parsing failed.\n\tsql parser error: .+"):
         ast = parse_sql(sql=sql, dialect="ansi")[0]
