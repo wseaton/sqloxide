@@ -9,10 +9,10 @@ name = "sqloxide"
 crate-type = ["cdylib"]
 
 [dependencies]
-pythonize = "0.15.0"
+pythonize = "0.16"
 
 [dependencies.pyo3]
-version = "0.15.1"
+version = "0.16"
 features = ["extension-module"]
 
 [dependencies.sqlparser]
