@@ -18,6 +18,7 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
         "snowflake" => Box::new(SnowflakeDialect {}),
         "sqlite" => Box::new(SQLiteDialect {}),
         "clickhouse" => Box::new(ClickHouseDialect {}),
+        "redshift" => Box::new(RedshiftSqlDialect {}),
         _ => {
             println!("The dialect you chose was not recognized, falling back to 'generic'");
             Box::new(GenericDialect {})
@@ -38,6 +39,8 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
 /// - snowflake
 /// - sqlite
 /// - clickhouse
+/// - redshift
+/// 
 #[pyfunction]
 #[pyo3(text_signature = "(sql, dialect)")]
 fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
