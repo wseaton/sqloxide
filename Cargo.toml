@@ -9,7 +9,7 @@ name = "sqloxide"
 crate-type = ["cdylib"]
 
 [dependencies]
-pythonize = "0.16"
+pythonize = "0.17"
 
 [dependencies.pyo3]
 version = "0.16"
