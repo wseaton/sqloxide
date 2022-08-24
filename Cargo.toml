@@ -12,7 +12,7 @@ crate-type = ["cdylib"]
 pythonize = "0.16"
 
 [dependencies.pyo3]
-version = "0.16"
+version = "0.17"
 features = ["extension-module"]
 
 [dependencies.sqlparser]
