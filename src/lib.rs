@@ -9,16 +9,17 @@ use sqlparser::parser::Parser;
 
 fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
     match dialect.to_lowercase().as_str() {
-        "generic" => Box::new(GenericDialect {}),
         "ansi" => Box::new(AnsiDialect {}),
+        "bigquery" | "bq" => Box::new(BigQueryDialect {}),
+        "clickhouse" => Box::new(ClickHouseDialect {}),
+        "generic" => Box::new(GenericDialect {}),
         "hive" => Box::new(HiveDialect {}),
         "ms" | "mssql" => Box::new(MsSqlDialect {}),
         "mysql" => Box::new(MySqlDialect {}),
         "postgres" => Box::new(PostgreSqlDialect {}),
+        "redshift" => Box::new(RedshiftSqlDialect {}),
         "snowflake" => Box::new(SnowflakeDialect {}),
         "sqlite" => Box::new(SQLiteDialect {}),
-        "clickhouse" => Box::new(ClickHouseDialect {}),
-        "redshift" => Box::new(RedshiftSqlDialect {}),
         _ => {
             println!("The dialect you chose was not recognized, falling back to 'generic'");
             Box::new(GenericDialect {})
@@ -28,8 +29,8 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
 
 /// Function to parse SQL statements from a string. Returns a list with
 /// one item per query statement.
-/// 
-/// Available `dialects`: 
+///
+/// Available `dialects`:
 /// - generic
 /// - ansi
 /// - hive
@@ -40,7 +41,8 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
 /// - sqlite
 /// - clickhouse
 /// - redshift
-/// 
+/// - bigquery (bq)
+///
 #[pyfunction]
 #[pyo3(text_signature = "(sql, dialect)")]
 fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
@@ -53,7 +55,10 @@ fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
         }
         Err(_e) => {
             let msg = _e.to_string();
-            return Err(PyValueError::new_err(format!("Query parsing failed.\n\t{}", msg)));
+            return Err(PyValueError::new_err(format!(
+                "Query parsing failed.\n\t{}",
+                msg
+            )));
         }
     };
 
