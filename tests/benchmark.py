@@ -29,7 +29,7 @@ def bench_mozsqlparser():
 
 
 def bench_sqlglot():
-    return sqlglot.parse(TEST_SQL)
+    return sqlglot.parse(TEST_SQL, error_level=sqlglot.ErrorLevel.IGNORE)
 
 
 def test_sqloxide(benchmark):
@@ -44,4 +44,3 @@ def test_mozsqlparser(benchmark):
 
 def test_sqlglot(benchmark):
     benchmark(bench_sqlglot)
-    
