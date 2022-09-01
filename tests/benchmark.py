@@ -44,4 +44,3 @@ def test_mozsqlparser(benchmark):
 
 def test_sqlglot(benchmark):
     benchmark(bench_sqlglot)
-    
