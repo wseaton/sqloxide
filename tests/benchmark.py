@@ -39,8 +39,10 @@ def test_sqloxide(benchmark):
 def test_sqlparser(benchmark):
     benchmark(bench_sqlparser)
 
+
 def test_mozsqlparser(benchmark):
     benchmark(bench_mozsqlparser)
+
 
 def test_sqlglot(benchmark):
     benchmark(bench_sqlglot)
