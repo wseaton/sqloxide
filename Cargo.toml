@@ -16,5 +16,5 @@ version = "0.17.1"
 features = ["extension-module"]
 
 [dependencies.sqlparser]
-version = "0.22.0"
+version = "0.24.0"
 features = ["json_example"]
