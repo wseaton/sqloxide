@@ -34,7 +34,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "six", "sphinx", "sphinx-notfound-page", "zope.interface"]
 docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
 tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "six", "zope.interface"]
-tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "six"]
+tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "six"]
 
 [[package]]
 name = "backcall"
@@ -167,6 +167,7 @@ pexpect = {version = "*", markers = "sys_platform != \"win32\""}
 pickleshare = "*"
 prompt-toolkit = ">=2.0.0,<3.0.0 || >3.0.0,<3.0.1 || >3.0.1,<3.1.0"
 pygments = "*"
+setuptools = ">=18.5"
 traitlets = ">=4.2"
 
 [package.extras]
@@ -198,8 +199,8 @@ python-versions = ">=3.6,<4.0"
 
 [package.extras]
 colors = ["colorama (>=0.4.3,<0.5.0)"]
-pipfile_deprecated_finder = ["pipreqs", "requirementslib"]
-requirements_deprecated_finder = ["pip-api", "pipreqs"]
+pipfile-deprecated-finder = ["pipreqs", "requirementslib"]
+requirements-deprecated-finder = ["pip-api", "pipreqs"]
 
 [[package]]
 name = "jedi"
@@ -492,8 +493,20 @@ optional = false
 python-versions = ">=2.7"
 
 [package.extras]
-dev = ["Django (>=1.11)", "check-manifest", "colorama (<=0.4.1)", "coverage", "flake8", "nose2", "readme-renderer (<25.0)", "tox", "wheel", "zest.releaser"]
-doc = ["sphinx", "sphinx-rtd-theme"]
+dev = ["Django (>=1.11)", "check-manifest", "colorama (<=0.4.1)", "coverage", "flake8", "nose2", "readme-renderer (<25.0)", "tox", "wheel", "zest.releaser[recommended]"]
+doc = ["Sphinx", "sphinx-rtd-theme"]
+
+[[package]]
+name = "setuptools"
+version = "59.6.0"
+description = "Easily download, build, install, upgrade, and uninstall Python packages"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=8.2)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx", "sphinx-inline-tabs", "sphinxcontrib-towncrier"]
+testing = ["flake8-2020", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mock", "paver", "pip (>=19.1)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.0.1)", "pytest-flake8", "pytest-mypy", "pytest-virtualenv (>=1.2.7)", "pytest-xdist", "sphinx", "virtualenv (>=13.0.0)", "wheel"]
 
 [[package]]
 name = "setuptools-rust"
@@ -505,6 +518,7 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 semantic-version = ">=2.8.2,<3"
+setuptools = ">=46.1"
 typing-extensions = ">=3.7.4.3"
 
 [[package]]
@@ -517,7 +531,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "sqlglot"
-version = "5.3.0"
+version = "6.3.5"
 description = "An easily customizable SQL parser and transpiler"
 category = "dev"
 optional = false
@@ -602,7 +616,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=4.6)", "pytest-black (
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.0,<4.0"
-content-hash = "28be97867dd01bed4e2f1d4c12fcd95253ef08c75023b437fec084112dd5086e"
+content-hash = "17e612ceaf04d8b7b5f92cb6d582935d59f36aacc7a049e9257c859615a67a1c"
 
 [metadata.files]
 appdirs = [
@@ -841,6 +855,10 @@ semantic-version = [
     {file = "semantic_version-2.9.0-py2.py3-none-any.whl", hash = "sha256:db2504ab37902dd2c9876ece53567aa43a5b2a417fbe188097b2048fff46da3d"},
     {file = "semantic_version-2.9.0.tar.gz", hash = "sha256:abf54873553e5e07a6fd4d5f653b781f5ae41297a493666b59dcf214006a12b2"},
 ]
+setuptools = [
+    {file = "setuptools-59.6.0-py3-none-any.whl", hash = "sha256:4ce92f1e1f8f01233ee9952c04f6b81d1e02939d6e1b488428154974a4d0783e"},
+    {file = "setuptools-59.6.0.tar.gz", hash = "sha256:22c7348c6d2976a52632c67f7ab0cdf40147db7789f9aed18734643fe9cf3373"},
+]
 setuptools-rust = [
     {file = "setuptools-rust-1.1.2.tar.gz", hash = "sha256:a0adb9b503c0ffc4e8fe80b7c617898cefa78049983aaaea7f747e153a3e65d1"},
     {file = "setuptools_rust-1.1.2-py3-none-any.whl", hash = "sha256:72288a34cbb2efc436227f61548a453e91b2b3de1ca5846ab5d6bbcb859595c7"},
@@ -850,8 +868,8 @@ six = [
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
 sqlglot = [
-    {file = "sqlglot-5.3.0-py3-none-any.whl", hash = "sha256:a42ca990dcee4e63f9d290438b50523a2fe90d5626c81d31dd32785763c7b98b"},
-    {file = "sqlglot-5.3.0.tar.gz", hash = "sha256:867418bf5757e65d7289e0a6c381697c2eca9afe3ad7b78a92cc573d950d3df9"},
+    {file = "sqlglot-6.3.5-py3-none-any.whl", hash = "sha256:913628dc6cbeef5e7fee725ffe206fbc6363421d1bf2ab8f5de5a465029a522d"},
+    {file = "sqlglot-6.3.5.tar.gz", hash = "sha256:5ebc4f04d7d6771d5a4ed8c638f71044b28b1ccb754bfd5cc8fbef95d250260c"},
 ]
 sqlparse = [
     {file = "sqlparse-0.4.2-py3-none-any.whl", hash = "sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d"},
