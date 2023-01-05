@@ -104,23 +104,41 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   manylinux-build:
+    if: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {tag: manylinux2014, arch: x86_64}
+          - {tag: manylinux2014, arch: i686}
+          - {tag: manylinux2014, arch: aarch64}
+          - {tag: manylinux2014, arch: ppc64le}
+
     runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
     needs: lint
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           path: io
-     
-      - name: build wheels
-        run: io/build-wheels.sh
 
-      - name: archive wheels
+      - name: Set up QEMU for multi-arch build
+        uses: docker/setup-qemu-action@v1
+
+      - name: Build Wheels
+        run: >-
+          docker run --rm
+          -e PLAT=${{ matrix.tag }}_${{ matrix.arch }}
+          -e PACKAGE_NAME=sqloxide
+          -v `pwd`:/io
+          --workdir /io
+          quay.io/pypa/${{ matrix.tag }}_${{ matrix.arch }}
+          io/build-wheels.sh
+
+      - name: Archive Wheels
         uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: io/dist/*manylinux2014*.whl
+          path: io/dist/*${{ matrix.tag }}_${{ matrix.arch }}.whl
 
   publish:
     runs-on: ubuntu-latest
