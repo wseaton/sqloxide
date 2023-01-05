@@ -1,7 +1,8 @@
 name: Publish to PyPI.org
 on:
-  branches:
-      - "arm64-build"
+  push:
+    branches:
+        - "arm64-build"
 jobs:
   pypi:
     runs-on: ubuntu-latest
