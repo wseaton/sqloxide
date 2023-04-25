@@ -142,9 +142,24 @@ jobs:
           name: wheels
           path: io/dist/*${{ matrix.tag }}_${{ matrix.arch }}.whl
 
+  source-build:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build source distribution
+        run: |
+          pip install -U setuptools wheel setuptools-rust
+          python setup.py sdist
+      - name: Archive source distribution
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist/*
+
   publish:
     runs-on: ubuntu-latest
-    needs: [manylinux-build, native-build]
+    needs: [manylinux-build, native-build, source-build]
     steps: 
 
       - uses: actions/download-artifact@v2
