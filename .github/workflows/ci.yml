@@ -47,9 +47,6 @@ jobs:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         os: [macos-latest, windows-latest, ubuntu-latest]
-        exclude:
-          - os: macos-latest # no runners available yet
-            python-version: "3.11"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
