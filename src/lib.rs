@@ -1,9 +1,12 @@
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
+use pythonize::PythonizeError;
+use sqlparser::ast::Statement;
 
+use core::ops::ControlFlow;
 use pythonize::pythonize;
-
+use sqlparser::ast::visit_relations;
 use sqlparser::dialect::*;
 use sqlparser::parser::Parser;
 
@@ -65,8 +68,53 @@ fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
     Ok(output)
 }
 
+///
+/// Function to extract relations from a parsed query.
+/// Returns a nested list of relations, one list per query statement.
+///
+/// Example:
+/// ```python
+/// from sqloxide import parse_sql, extract_relations
+///
+/// sql = "SELECT * FROM table1 JOIN table2 ON table1.id = table2.id"
+/// parsed_query = parse_sql(sql, "generic")
+/// relations = extract_relations(parsed_query)
+/// print(relations)
+/// ```
+///
+#[pyfunction]
+#[pyo3(text_signature = "(parsed_query)")]
+fn extract_relations(py: Python, parsed_query: &PyAny) -> PyResult<PyObject> {
+    let parse_result: Result<Vec<Statement>, PythonizeError> = pythonize::depythonize(parsed_query);
+
+    let mut relations = Vec::new();
+
+    match parse_result {
+        Ok(statements) => {
+            for statement in statements {
+                visit_relations(&statement, |relation| {
+                    relations.push(relation.clone());
+                    ControlFlow::<()>::Continue(())
+                });
+            }
+        }
+        Err(_e) => {
+            let msg = _e.to_string();
+            return Err(PyValueError::new_err(format!(
+                "Query serialization failed.\n\t{}",
+                msg
+            )));
+        }
+    };
+
+    let output = pythonize(py, &relations).expect("Internal python deserialization failed.");
+
+    Ok(output)
+}
+
 #[pymodule]
 fn sqloxide(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(parse_sql, m)?)?;
+    m.add_function(wrap_pyfunction!(extract_relations, m)?)?;
     Ok(())
 }
