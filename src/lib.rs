@@ -1,7 +1,9 @@
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
+
 use pyo3::wrap_pyfunction;
 use pythonize::PythonizeError;
+use sqlparser::ast::visit_relations_mut;
 use sqlparser::ast::Statement;
 
 use core::ops::ControlFlow;
@@ -112,9 +114,73 @@ fn extract_relations(py: Python, parsed_query: &PyAny) -> PyResult<PyObject> {
     Ok(output)
 }
 
+/// This function takes a parsed query object and a callable 1 argument `function`,
+/// and applies the function to each relation in the query.
+///
+/// It returns a string with the mutated query.
+#[pyfunction]
+#[pyo3(text_signature = "(parsed_query, func)")]
+fn mutate_relations(_py: Python, parsed_query: &PyAny, func: &PyAny) -> PyResult<Vec<String>> {
+    let parse_result: Result<Vec<Statement>, PythonizeError> = pythonize::depythonize(parsed_query);
+
+    let output = match parse_result {
+        Ok(mut statements) => {
+            for statement in &mut statements {
+                visit_relations_mut(statement, |table| {
+                    for section in table.0.iter_mut() {
+                        section.value = func
+                            .call1((section.value.to_owned(),))
+                            .expect("failed to call function")
+                            .to_string();
+                    }
+                    ControlFlow::<()>::Continue(())
+                });
+            }
+            statements
+        }
+        Err(_e) => {
+            let msg = _e.to_string();
+            return Err(PyValueError::new_err(format!(
+                "Query serialization failed.\n\t{}",
+                msg
+            )));
+        }
+    };
+
+    Ok(output
+        .iter()
+        .map(|x| x.to_string())
+        .collect::<Vec<String>>())
+}
+
+/// This utility function allows reconstituing a modified AST back into list of SQL queries.
+#[pyfunction]
+#[pyo3(text_signature = "(ast)")]
+fn restore_ast(_py: Python, ast: &PyAny) -> PyResult<Vec<String>> {
+    let parse_result: Result<Vec<Statement>, PythonizeError> = pythonize::depythonize(ast);
+
+    let output = match parse_result {
+        Ok(statements) => statements,
+        Err(_e) => {
+            let msg = _e.to_string();
+            return Err(PyValueError::new_err(format!(
+                "Query serialization failed.\n\t{}",
+                msg
+            )));
+        }
+    };
+
+    Ok(output
+        .iter()
+        .map(|x| x.to_string())
+        .collect::<Vec<String>>())
+}
+
 #[pymodule]
 fn sqloxide(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(parse_sql, m)?)?;
     m.add_function(wrap_pyfunction!(extract_relations, m)?)?;
+    m.add_function(wrap_pyfunction!(mutate_relations, m)?)?;
+    m.add_function(wrap_pyfunction!(restore_ast, m)?)?;
     Ok(())
 }
