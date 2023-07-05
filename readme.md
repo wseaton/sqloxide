@@ -11,13 +11,16 @@ The original goal of this project was to have a very fast, efficient, and accura
 The project provides `manylinux2014` wheels on pypi so it should be compatible with most linux distributions. Native wheels are also now available for OSX and Windows.
 
 To install from pypi:
+
 ```sh
 pip install sqloxide
 ```
 
 ## Usage
 
-```python 
+Parsing a SQL query is relatively straight forward:
+
+```python
 from sqloxide import parse_sql
 
 sql = """
@@ -86,15 +89,66 @@ print(output)
             },
             { # OUTPUT TRUNCATED
 ```
+
+Note that you get back what looks like a JSON document but in actual python types, this is a typed AST that matches the sqlparser-rs AST schema.
+
+We can convert this AST back into a SQL query by running:
+
+```python
+from sqloxide import restore_ast
+
+query = restore_ast(ast=output)
+print(query)
+```
+
+This reconstruction is helpful if you want to make manual edits to the AST in python.
+
+If you want a more structured approach to AST edits, we also expose APIs that allow you to use the visitor pattern to make query modifications.
+
+Here is an example for mutating a subset of the expressions in the query to be SHOUTING UPPERCASE:
+
+```python
+from sqloxide import parse_sql, mutate_expressions
+
+sql = "SELECT something from somewhere where something = 1 and something_else = 2"
+
+def func(x):
+    if "CompoundIdentifier" in x.keys():
+        for y in x["CompoundIdentifier"]:
+            y["value"] = y["value"].upper()
+    return x
+
+ast = parse_sql(sql=sql, dialect="ansi")
+result = mutate_expressions(parsed_query=ast, func=func)
+print(result)
+---
+>>> ['SELECT something FROM somewhere WHERE something = 1 AND something_else = 2']
+```
+
+What if you needed to make a structured edit to the table name in the above query? There is also an API for that as well:
+
+```python
+from sqloxide import parse_sql, mutate_relations
+
+def func(x):
+    return x.replace("somewhere", "anywhere")
+result = mutate_relations(parsed_query=ast, func=func)
+print(result)
+---
+>>> ['SELECT something FROM anywhere WHERE something = 1 AND something_else = 2']
+
+```
+
+These features combined allow for powerful semantic rewrites of queries, if you have any examples you'd like to share please contribue back to the `examples/` folder!
+
 ## Benchmarks
 
 We run 4 benchmarks, comparing to some python native sql parsing libraries:
 
-* `test_sqloxide` - parse query and get a python object back from rust 
+* `test_sqloxide` - parse query and get a python object back from rust
 * `test_sqlparser` - testing [sqlparse](https://pypi.org/project/sqlparse/), query -> AST
 * `test_mozsqlparser` - testing [moz-sql-parser](https://pypi.org/project/moz-sql-parser/), full roundtrip as in the docs, query -> JSON
 * `test_sqlglot` - testing [sqlglot](https://github.com/tobymao/sqlglot/), query -> AST
-
 
 To run them on your machine:
 
@@ -118,7 +172,7 @@ test_mozsqlparser     2,793.8400 (94.13)    12,358.7790 (245.07)   3,091.8519 (1
 The `depgraph` example reads a bunch of `.sql` files from disk using glob, and builds a dependency graph of all of the objects using graphviz.
 
 ```
-poetry run python ./examples/depgraph.py --path {path/to/folder/with/queries} 
+poetry run python ./examples/depgraph.py --path {path/to/folder/with/queries}
 ```
 
 ## Develop
