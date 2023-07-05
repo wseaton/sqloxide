@@ -2,6 +2,19 @@
 
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/wseaton/sqloxide/ci.yml)](https://github.com/wseaton/sqloxide/actions/workflows/ci.yml)[![Downloads](https://static.pepy.tech/badge/sqloxide)](https://pepy.tech/project/sqloxide)
 
+---
+
+- [sqloxide](#sqloxide)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Parsing](#parsing)
+    - [AST Rewrites](#ast-rewrites)
+  - [Benchmarks](#benchmarks)
+  - [Example](#example)
+  - [Develop](#develop)
+
+---
+
 `sqloxide` wraps rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package using `pyO3`.
 
 The original goal of this project was to have a very fast, efficient, and accurate SQL parser I could use for building data lineage graphs across large code bases (think hundreds of auto-generated .sql files). Most existing sql parsing approaches for python are either very slow or not accurate (especially in regards to deeply nested queries, sub-selects and/or table aliases). Looking to the rust community for support, I found the excellent `sqlparser-rs` crate which is quite easy to wrap in python code.
@@ -17,6 +30,8 @@ pip install sqloxide
 ```
 
 ## Usage
+
+### Parsing
 
 Parsing a SQL query is relatively straight forward:
 
@@ -103,6 +118,8 @@ print(query)
 
 This reconstruction is helpful if you want to make manual edits to the AST in python.
 
+### AST Rewrites
+
 If you want a more structured approach to AST edits, we also expose APIs that allow you to use the visitor pattern to make query modifications.
 
 Here is an example for mutating a subset of the expressions in the query to be SHOUTING UPPERCASE:
@@ -145,10 +162,10 @@ These features combined allow for powerful semantic rewrites of queries, if you 
 
 We run 4 benchmarks, comparing to some python native sql parsing libraries:
 
-* `test_sqloxide` - parse query and get a python object back from rust
-* `test_sqlparser` - testing [sqlparse](https://pypi.org/project/sqlparse/), query -> AST
-* `test_mozsqlparser` - testing [moz-sql-parser](https://pypi.org/project/moz-sql-parser/), full roundtrip as in the docs, query -> JSON
-* `test_sqlglot` - testing [sqlglot](https://github.com/tobymao/sqlglot/), query -> AST
+- `test_sqloxide` - parse query and get a python object back from rust
+- `test_sqlparser` - testing [sqlparse](https://pypi.org/project/sqlparse/), query -> AST
+- `test_mozsqlparser` - testing [moz-sql-parser](https://pypi.org/project/moz-sql-parser/), full roundtrip as in the docs, query -> JSON
+- `test_sqlglot` - testing [sqlglot](https://github.com/tobymao/sqlglot/), query -> AST
 
 To run them on your machine:
 
