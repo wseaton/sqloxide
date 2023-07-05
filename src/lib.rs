@@ -58,11 +58,10 @@ fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
         Ok(statements) => {
             pythonize(py, &statements).expect("Internal python serialization failed.")
         }
-        Err(_e) => {
-            let msg = _e.to_string();
+        Err(e) => {
+            let msg = e.to_string();
             return Err(PyValueError::new_err(format!(
-                "Query parsing failed.\n\t{}",
-                msg
+                "Query parsing failed.\n\t{msg}"
             )));
         }
     };
@@ -100,11 +99,10 @@ fn extract_relations(py: Python, parsed_query: &PyAny) -> PyResult<PyObject> {
                 });
             }
         }
-        Err(_e) => {
-            let msg = _e.to_string();
+        Err(e) => {
+            let msg = e.to_string();
             return Err(PyValueError::new_err(format!(
-                "Query serialization failed.\n\t{}",
-                msg
+                "Query serialization failed.\n\t{msg}"
             )));
         }
     };
@@ -127,9 +125,9 @@ fn mutate_relations(_py: Python, parsed_query: &PyAny, func: &PyAny) -> PyResult
         Ok(mut statements) => {
             for statement in &mut statements {
                 visit_relations_mut(statement, |table| {
-                    for section in table.0.iter_mut() {
+                    for section in &mut table.0 {
                         section.value = func
-                            .call1((section.value.to_owned(),))
+                            .call1((section.value.clone(),))
                             .expect("failed to call function")
                             .to_string();
                     }
@@ -138,18 +136,17 @@ fn mutate_relations(_py: Python, parsed_query: &PyAny, func: &PyAny) -> PyResult
             }
             statements
         }
-        Err(_e) => {
-            let msg = _e.to_string();
+        Err(e) => {
+            let msg = e.to_string();
             return Err(PyValueError::new_err(format!(
-                "Query serialization failed.\n\t{}",
-                msg
+                "Query serialization failed.\n\t{msg}"
             )));
         }
     };
 
     Ok(output
         .iter()
-        .map(|x| x.to_string())
+        .map(std::string::ToString::to_string)
         .collect::<Vec<String>>())
 }
 
@@ -161,18 +158,17 @@ fn restore_ast(_py: Python, ast: &PyAny) -> PyResult<Vec<String>> {
 
     let output = match parse_result {
         Ok(statements) => statements,
-        Err(_e) => {
-            let msg = _e.to_string();
+        Err(e) => {
+            let msg = e.to_string();
             return Err(PyValueError::new_err(format!(
-                "Query serialization failed.\n\t{}",
-                msg
+                "Query serialization failed.\n\t{msg}"
             )));
         }
     };
 
     Ok(output
         .iter()
-        .map(|x| x.to_string())
+        .map(std::string::ToString::to_string)
         .collect::<Vec<String>>())
 }
 
