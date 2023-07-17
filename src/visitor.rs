@@ -100,7 +100,7 @@ pub fn mutate_expressions(py: Python, parsed_query: &PyAny, func: &PyAny) -> PyR
                 }
             };
 
-            let func_result = match func.call1((converted_expr.clone(),)) {
+            let func_result = match func.call1((converted_expr,)) {
                 Ok(val) => val,
                 Err(e) => {
                     let msg = e.to_string();
@@ -110,7 +110,7 @@ pub fn mutate_expressions(py: Python, parsed_query: &PyAny, func: &PyAny) -> PyR
                 }
             };
 
-            *expr = match pythonize::depythonize(&func_result) {
+            *expr = match pythonize::depythonize(func_result) {
                 Ok(val) => val,
                 Err(e) => {
                     let msg = e.to_string();
