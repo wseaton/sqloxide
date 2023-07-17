@@ -1,91 +1,83 @@
 use core::ops::ControlFlow;
-use pythonize::pythonize;
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-use pythonize::PythonizeError;
+use serde::Serialize;
 
 use sqlparser::ast::{
     Statement, {visit_expressions, visit_expressions_mut, visit_relations, visit_relations_mut},
 };
 
-///
-/// Function to extract relations from a parsed query.
-/// Returns a nested list of relations, one list per query statement.
-///
-/// Example:
-/// ```python
-/// from sqloxide import parse_sql, extract_relations
-///
-/// sql = "SELECT * FROM table1 JOIN table2 ON table1.id = table2.id"
-/// parsed_query = parse_sql(sql, "generic")
-/// relations = extract_relations(parsed_query)
-/// print(relations)
-/// ```
-///
+// Refactored function for handling depythonization
+fn depythonize_query(parsed_query: &PyAny) -> Result<Vec<Statement>, PyErr> {
+    match pythonize::depythonize(parsed_query) {
+        Ok(statements) => Ok(statements),
+        Err(e) => {
+            let msg = e.to_string();
+            Err(PyValueError::new_err(format!(
+                "Query serialization failed.\n\t{msg}"
+            )))
+        }
+    }
+}
+
+fn pythonize_query_output<T>(py: Python, output: Vec<T>) -> PyResult<Py<PyAny>>
+where
+    T: Sized + Serialize,
+{
+    match pythonize::pythonize(py, &output) {
+        Ok(p) => Ok(p),
+        Err(e) => {
+            let msg = e.to_string();
+            Err(PyValueError::new_err(format!(
+                "Python object serialization failed.\n\t{msg}"
+            )))
+        }
+    }
+}
+
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query)")]
 pub fn extract_relations(py: Python, parsed_query: &PyAny) -> PyResult<PyObject> {
-    let parse_result: Result<Vec<Statement>, PythonizeError> = pythonize::depythonize(parsed_query);
+    let statements = depythonize_query(parsed_query)?;
 
     let mut relations = Vec::new();
+    for statement in statements {
+        visit_relations(&statement, |relation| {
+            relations.push(relation.clone());
+            ControlFlow::<()>::Continue(())
+        });
+    }
 
-    match parse_result {
-        Ok(statements) => {
-            for statement in statements {
-                visit_relations(&statement, |relation| {
-                    relations.push(relation.clone());
-                    ControlFlow::<()>::Continue(())
-                });
-            }
-        }
-        Err(e) => {
-            let msg = e.to_string();
-            return Err(PyValueError::new_err(format!(
-                "Query serialization failed.\n\t{msg}"
-            )));
-        }
-    };
-
-    let output = pythonize(py, &relations).expect("Internal python deserialization failed.");
-
-    Ok(output)
+    pythonize_query_output(py, relations)
 }
 
-/// This function takes a parsed query object and a callable 1 argument `function`,
-/// and applies the function to each relation in the query.
-///
-/// It returns a string with the mutated query.
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query, func)")]
 pub fn mutate_relations(_py: Python, parsed_query: &PyAny, func: &PyAny) -> PyResult<Vec<String>> {
-    let parse_result: Result<Vec<Statement>, PythonizeError> = pythonize::depythonize(parsed_query);
+    let mut statements = depythonize_query(parsed_query)?;
 
-    let output = match parse_result {
-        Ok(mut statements) => {
-            for statement in &mut statements {
-                visit_relations_mut(statement, |table| {
-                    for section in &mut table.0 {
-                        section.value = func
-                            .call1((section.value.clone(),))
-                            .expect("failed to call function")
-                            .to_string();
+    for statement in &mut statements {
+        visit_relations_mut(statement, |table| {
+            for section in &mut table.0 {
+                let val = match func.call1((section.value.clone(),)) {
+                    Ok(val) => val,
+                    Err(e) => {
+                        let msg = e.to_string();
+                        return ControlFlow::Break(PyValueError::new_err(format!(
+                            "Python object serialization failed.\n\t{msg}"
+                        )));
                     }
-                    ControlFlow::<()>::Continue(())
-                });
-            }
-            statements
-        }
-        Err(e) => {
-            let msg = e.to_string();
-            return Err(PyValueError::new_err(format!(
-                "Query serialization failed.\n\t{msg}"
-            )));
-        }
-    };
+                };
 
-    Ok(output
+                section.value = val.to_string();
+            }
+            ControlFlow::Continue(())
+        });
+    }
+
+    Ok(statements
         .iter()
         .map(std::string::ToString::to_string)
         .collect::<Vec<String>>())
@@ -93,39 +85,46 @@ pub fn mutate_relations(_py: Python, parsed_query: &PyAny, func: &PyAny) -> PyRe
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query, func)")]
-pub fn mutate_expressions(
-    _py: Python,
-    parsed_query: &PyAny,
-    func: &PyAny,
-) -> PyResult<Vec<String>> {
-    let parse_result: Result<Vec<Statement>, PythonizeError> = pythonize::depythonize(parsed_query);
+pub fn mutate_expressions(py: Python, parsed_query: &PyAny, func: &PyAny) -> PyResult<Vec<String>> {
+    let mut statements = depythonize_query(parsed_query)?;
 
-    let output = match parse_result {
-        Ok(mut statements) => {
-            for statement in &mut statements {
-                visit_expressions_mut(statement, |expr| {
-                    let converted_expr =
-                        pythonize::pythonize(_py, expr).expect("Failed to serialize");
+    for statement in &mut statements {
+        visit_expressions_mut(statement, |expr| {
+            let converted_expr = match pythonize::pythonize(py, expr) {
+                Ok(val) => val,
+                Err(e) => {
+                    let msg = e.to_string();
+                    return ControlFlow::Break(PyValueError::new_err(format!(
+                        "Python object deserialization failed.\n\t{msg}"
+                    )));
+                }
+            };
 
-                    *expr = pythonize::depythonize(
-                        func.call1((converted_expr,))
-                            .expect("failed to call function"),
-                    )
-                    .expect("failed to deserialize");
-                    ControlFlow::<()>::Continue(())
-                });
-            }
-            statements
-        }
-        Err(e) => {
-            let msg = e.to_string();
-            return Err(PyValueError::new_err(format!(
-                "Query serialization failed.\n\t{msg}"
-            )));
-        }
-    };
+            let func_result = match func.call1((converted_expr.clone(),)) {
+                Ok(val) => val,
+                Err(e) => {
+                    let msg = e.to_string();
+                    return ControlFlow::Break(PyValueError::new_err(format!(
+                        "Calling python function failed.\n\t{msg}"
+                    )));
+                }
+            };
 
-    Ok(output
+            *expr = match pythonize::depythonize(&func_result) {
+                Ok(val) => val,
+                Err(e) => {
+                    let msg = e.to_string();
+                    return ControlFlow::Break(PyValueError::new_err(format!(
+                        "Python object reserialization failed.\n\t{msg}"
+                    )));
+                }
+            };
+
+            ControlFlow::Continue(())
+        });
+    }
+
+    Ok(statements
         .iter()
         .map(std::string::ToString::to_string)
         .collect::<Vec<String>>())
@@ -134,28 +133,15 @@ pub fn mutate_expressions(
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query)")]
 pub fn extract_expressions(py: Python, parsed_query: &PyAny) -> PyResult<PyObject> {
-    let parse_result: Result<Vec<Statement>, PythonizeError> = pythonize::depythonize(parsed_query);
+    let statements = depythonize_query(parsed_query)?;
 
     let mut expressions = Vec::new();
+    for statement in statements {
+        visit_expressions(&statement, |expr| {
+            expressions.push(expr.clone());
+            ControlFlow::<()>::Continue(())
+        });
+    }
 
-    match parse_result {
-        Ok(statements) => {
-            for statement in statements {
-                visit_expressions(&statement, |expr| {
-                    expressions.push(expr.clone());
-                    ControlFlow::<()>::Continue(())
-                });
-            }
-        }
-        Err(e) => {
-            let msg = e.to_string();
-            return Err(PyValueError::new_err(format!(
-                "Query serialization failed.\n\t{msg}"
-            )));
-        }
-    };
-
-    let output = pythonize(py, &expressions).expect("Internal python deserialization failed.");
-
-    Ok(output)
+    pythonize_query_output(py, expressions)
 }

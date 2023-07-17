@@ -57,7 +57,10 @@ fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
 
     let output = match parse_result {
         Ok(statements) => {
-            pythonize(py, &statements).expect("Internal python serialization failed.")
+            pythonize(py, &statements).map_err(|e| {
+                let msg = e.to_string();
+                PyValueError::new_err(format!("Python object serialization failed.\n\t{msg}"))
+            })?
         }
         Err(e) => {
             let msg = e.to_string();

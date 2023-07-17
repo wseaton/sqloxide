@@ -10,6 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pythonize = "0.19"
+serde = "1.0.171"
 
 [dependencies.pyo3]
 version = "0.19.1"
