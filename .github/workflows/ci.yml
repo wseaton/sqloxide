@@ -111,7 +111,9 @@ jobs:
           - {tag: manylinux2014, arch: x86_64}
           - {tag: manylinux2014, arch: i686}
           - {tag: manylinux2014, arch: aarch64}
-          - {tag: manylinux2014, arch: ppc64le}
+          # TODO: figure out a way to renable this, for now it's far too slow
+          # to run in github actions (> 6hrs)
+          # - {tag: manylinux2014, arch: ppc64le}
 
     runs-on: ubuntu-latest
     needs: lint
