@@ -7,7 +7,7 @@ package_data = {"": ["*"]}
 
 setup_kwargs = {
     "name": "sqloxide",
-    "version": "0.1.37",
+    "version": "0.1.39",
     "description": "Python bindings for sqlparser-rs",
     "long_description": open("readme.md").read(),
     "long_description_content_type": "text/markdown",

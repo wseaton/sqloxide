@@ -18,6 +18,7 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
         "ansi" => Box::new(AnsiDialect {}),
         "bigquery" | "bq" => Box::new(BigQueryDialect {}),
         "clickhouse" => Box::new(ClickHouseDialect {}),
+        "duckdb" => Box::new(DuckDbDialect {}),
         "generic" => Box::new(GenericDialect {}),
         "hive" => Box::new(HiveDialect {}),
         "ms" | "mssql" => Box::new(MsSqlDialect {}),
@@ -39,6 +40,7 @@ fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
 /// Available `dialects`:
 /// - generic
 /// - ansi
+/// - duckdb
 /// - hive
 /// - ms (mssql)
 /// - mysql
@@ -56,12 +58,10 @@ fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
     let parse_result = Parser::parse_sql(&*chosen_dialect, sql);
 
     let output = match parse_result {
-        Ok(statements) => {
-            pythonize(py, &statements).map_err(|e| {
-                let msg = e.to_string();
-                PyValueError::new_err(format!("Python object serialization failed.\n\t{msg}"))
-            })?
-        }
+        Ok(statements) => pythonize(py, &statements).map_err(|e| {
+            let msg = e.to_string();
+            PyValueError::new_err(format!("Python object serialization failed.\n\t{msg}"))
+        })?,
         Err(e) => {
             let msg = e.to_string();
             return Err(PyValueError::new_err(format!(
