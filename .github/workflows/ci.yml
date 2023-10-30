@@ -57,9 +57,9 @@ jobs:
         with:
           poetry-version: 1.3.2
       - name: Install package deps
-        run: | 
+        run: |
           poetry install
-      
+
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -75,13 +75,13 @@ jobs:
         shell: bash
         env:
           DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
-          MACOSX_DEPLOYMENT_TARGET: '10.9'
+          MACOSX_DEPLOYMENT_TARGET: "10.9"
           ARCHFLAGS: -arch x86_64 -arch arm64
           PYO3_CROSS_LIB_DIR: /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.8/lib
         run: poetry run python setup.py bdist_wheel && poetry install
 
       - name: Build Python package
-        if:  matrix.os != 'macos-latest'
+        if: matrix.os != 'macos-latest'
         run: poetry run python setup.py bdist_wheel && poetry install
 
       - name: pytest
@@ -108,13 +108,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {tag: manylinux2014, arch: x86_64}
-          - {tag: manylinux2014, arch: i686}
-          - {tag: manylinux2014, arch: aarch64}
-          # TODO: figure out a way to renable this, for now it's far too slow
+          - { tag: manylinux2014, arch: x86_64 }
+          - { tag: manylinux2014, arch: i686 }
+          # TODO: figure out a way to renable these, for now far too slow
           # to run in github actions (> 6hrs)
           # - {tag: manylinux2014, arch: ppc64le}
-
+          # - {tag: manylinux2014, arch: aarch64}
     runs-on: ubuntu-latest
     needs: lint
     steps:
@@ -159,10 +158,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: [manylinux-build, native-build, source-build]
-    steps: 
-
+    steps:
       - uses: actions/download-artifact@v2
-        with: 
+        with:
           name: wheels
           path: dist/
 
