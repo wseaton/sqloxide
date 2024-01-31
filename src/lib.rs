@@ -7,54 +7,24 @@ use pyo3::wrap_pyfunction;
 use pythonize::PythonizeError;
 
 use sqlparser::ast::Statement;
+use sqlparser::dialect::dialect_from_str;
 use sqlparser::dialect::*;
 use sqlparser::parser::Parser;
 
 mod visitor;
 use visitor::{extract_expressions, extract_relations, mutate_expressions, mutate_relations};
 
-fn string_to_dialect(dialect: &str) -> Box<dyn Dialect> {
-    match dialect.to_lowercase().as_str() {
-        "ansi" => Box::new(AnsiDialect {}),
-        "bigquery" | "bq" => Box::new(BigQueryDialect {}),
-        "clickhouse" => Box::new(ClickHouseDialect {}),
-        "duckdb" => Box::new(DuckDbDialect {}),
-        "generic" => Box::new(GenericDialect {}),
-        "hive" => Box::new(HiveDialect {}),
-        "ms" | "mssql" => Box::new(MsSqlDialect {}),
-        "mysql" => Box::new(MySqlDialect {}),
-        "postgres" => Box::new(PostgreSqlDialect {}),
-        "redshift" => Box::new(RedshiftSqlDialect {}),
-        "snowflake" => Box::new(SnowflakeDialect {}),
-        "sqlite" => Box::new(SQLiteDialect {}),
-        _ => {
-            println!("The dialect you chose was not recognized, falling back to 'generic'");
-            Box::new(GenericDialect {})
-        }
-    }
-}
-
 /// Function to parse SQL statements from a string. Returns a list with
 /// one item per query statement.
 ///
-/// Available `dialects`:
-/// - generic
-/// - ansi
-/// - duckdb
-/// - hive
-/// - ms (mssql)
-/// - mysql
-/// - postgres
-/// - snowflake
-/// - sqlite
-/// - clickhouse
-/// - redshift
-/// - bigquery (bq)
-///
+/// Available `dialects`: https://github.com/sqlparser-rs/sqlparser-rs/blob/main/src/dialect/mod.rs#L189-L206
 #[pyfunction]
 #[pyo3(text_signature = "(sql, dialect)")]
 fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
-    let chosen_dialect = string_to_dialect(dialect);
+    let chosen_dialect = dialect_from_str(dialect).unwrap_or_else(|| {
+        println!("The dialect you chose was not recognized, falling back to 'generic'");
+        Box::new(GenericDialect {})
+    });
     let parse_result = Parser::parse_sql(&*chosen_dialect, sql);
 
     let output = match parse_result {
