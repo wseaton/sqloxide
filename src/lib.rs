@@ -17,20 +17,7 @@ use visitor::{extract_expressions, extract_relations, mutate_expressions, mutate
 /// Function to parse SQL statements from a string. Returns a list with
 /// one item per query statement.
 ///
-/// Available `dialects`:
-/// - generic
-/// - ansi
-/// - duckdb
-/// - hive
-/// - ms (mssql)
-/// - mysql
-/// - postgres
-/// - snowflake
-/// - sqlite
-/// - clickhouse
-/// - redshift
-/// - bigquery (bq)
-///
+/// Available `dialects`: https://github.com/sqlparser-rs/sqlparser-rs/blob/main/src/dialect/mod.rs#L189-L206
 #[pyfunction]
 #[pyo3(text_signature = "(sql, dialect)")]
 fn parse_sql(py: Python, sql: &str, dialect: &str) -> PyResult<PyObject> {
