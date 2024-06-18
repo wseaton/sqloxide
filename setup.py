@@ -18,7 +18,7 @@ setup_kwargs = {
     "url": "https://github.com/wseaton/sqloxide",
     "packages": packages,
     "package_data": package_data,
-    "python_requires": ">=3.7,<4.0",
+    "python_requires": ">=3.8,<4.0",
 }
 from build import *
 
