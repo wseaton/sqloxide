@@ -71,6 +71,7 @@ jobs:
         run: rustup target add aarch64-apple-darwin
 
       - name: Build on macOS universal2
+        if: matrix.os == 'macos-latest'
         shell: bash
         env:
           DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
