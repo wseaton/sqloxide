@@ -7,7 +7,7 @@ package_data = {"": ["*"]}
 
 setup_kwargs = {
     "name": "sqloxide",
-    "version": "0.1.43",
+    "version": "0.1.47",
     "description": "Python bindings for sqlparser-rs",
     "long_description": open("readme.md").read(),
     "long_description_content_type": "text/markdown",
@@ -18,7 +18,7 @@ setup_kwargs = {
     "url": "https://github.com/wseaton/sqloxide",
     "packages": packages,
     "package_data": package_data,
-    "python_requires": ">=3.7,<4.0",
+    "python_requires": ">=3.8,<4.0",
 }
 from build import *
 
