@@ -1,8 +1,8 @@
 [package]
 name = "sqloxide"
-version = "0.1.47"
+version = "0.1.48"
 authors = ["Will Eaton <me@wseaton.com>"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 name = "sqloxide"
