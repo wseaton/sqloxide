@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sqloxide_fork"
+name = "sqloxide"
 version = "0.1.51"
 repository = "https://github.com/wseaton/sqloxide"
 license = "MIT"
@@ -17,7 +17,7 @@ requires = ["maturin>=0.13,<0.14"]
 build-backend = "maturin"
 
 [project]
-name = "sqloxide_fork"
+name = "sqloxide"
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Rust",

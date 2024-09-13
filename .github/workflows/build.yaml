@@ -2,11 +2,8 @@ name: publish-pypi
 
 on:
   push:
-    branches:
-      - testbuild
-  # push:
-  #   tags:
-  #      - 'v*'
+    tags:
+       - 'v*'
 
 jobs:
   linux-wheels:
@@ -91,12 +88,9 @@ jobs:
       - run: mv ./windows-wheels/* wheels
 
 
-      - name: Display structure of downloaded files
-        run: ls wheels
-
       - name: Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.PYPI }}
           packages_dir: wheels/
           verify_metadata: false

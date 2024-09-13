@@ -66,7 +66,7 @@ fn restore_ast(_py: Python, ast: &PyAny) -> PyResult<Vec<String>> {
 }
 
 #[pymodule]
-fn sqloxide_fork(_py: Python, m: &PyModule) -> PyResult<()> {
+fn sqloxide(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(parse_sql, m)?)?;
     m.add_function(wrap_pyfunction!(restore_ast, m)?)?;
     // TODO: maybe refactor into seperate module
