@@ -1,6 +1,6 @@
 [package]
 name = "sqloxide_fork"
-version = "0.1.47"
+version = "0.1.50"
 authors = ["Will Eaton <me@wseaton.com>"]
 edition = "2018"
 
