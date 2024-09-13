@@ -1,0 +1,102 @@
+name: publish-pypi
+
+on:
+  push:
+    branches:
+      - testbuild
+  # push:
+  #   tags:
+  #      - 'v*'
+
+jobs:
+  linux-wheels:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [x86_64, i686, aarch64]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          maturin-version: latest
+          command: build
+          manylinux: auto
+          args: --release --sdist -i 3.8 3.9 3.10 3.11 3.12
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-wheels-${{ matrix.target }}
+          path: target/wheels/
+
+  osx-wheels:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          default: true
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build wheels
+        run: |
+          python3 -m pip install maturin
+          maturin build --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: osx-${{ matrix.python-version }}-wheel
+          path: target/wheels
+
+  windows-wheels:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          default: true
+      - uses: actions/setup-python@v2
+      - name: Build wheels
+        run: |
+          python -m pip install maturin
+          maturin build --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-wheels
+          path: target/wheels
+
+  push:
+    needs: [osx-wheels, windows-wheels, linux-wheels]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v4
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - run: mkdir wheels
+      - run: mv ./linux-wheels-x86_64/* wheels
+      - run: mv ./linux-wheels-i686/* wheels
+      - run: mv ./linux-wheels-aarch64/* wheels
+      - run: mv ./osx-3.12-wheel/* wheels
+      - run: mv ./osx-3.11-wheel/* wheels
+      - run: mv ./osx-3.10-wheel/* wheels
+      - run: mv ./osx-3.9-wheel/* wheels
+      - run: mv ./osx-3.8-wheel/* wheels
+      - run: mv ./windows-wheels/* wheels
+
+
+      - name: Display structure of downloaded files
+        run: ls wheels
+
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages_dir: wheels/
+          verify_metadata: false

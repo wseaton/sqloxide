@@ -1,11 +1,10 @@
 [tool.poetry]
-name = "sqloxide"
+name = "sqloxide_fork"
 version = "0.1.47"
 repository = "https://github.com/wseaton/sqloxide"
 license = "MIT"
 description = "Python bindings for sqlparser-rs"
 authors = ["Will Eaton <me@wseaton.com>"]
-build = "build.py"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Rust",
@@ -13,23 +12,13 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 
-
-[tool.poetry.dependencies]
-python = ">=3.7,<4.0"
-
-[tool.poetry.dev-dependencies]
-setuptools-rust = "^1.1.2"
-pytest = "^7.0.0"
-black = "*"
-isort = "^5.8.0"
-ipython = "^7"
-bump2version = "^1.0.1"
-
 [build-system]
-requires = [
-    "poetry-core>=1.0.0",
-    "setuptools>=41.0.0",
-    "wheel",
-    "setuptools_rust>=0.10.2",
+requires = ["maturin>=0.13,<0.14"]
+build-backend = "maturin"
+
+[project]
+name = "sqloxide_fork"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Rust",
 ]
-build-backend = "poetry.core.masonry.api"

@@ -1,11 +1,11 @@
 [package]
-name = "sqloxide"
+name = "sqloxide_fork"
 version = "0.1.47"
 authors = ["Will Eaton <me@wseaton.com>"]
 edition = "2018"
 
 [lib]
-name = "sqloxide"
+name = "sqloxide_fork"
 crate-type = ["cdylib"]
 
 [dependencies]
