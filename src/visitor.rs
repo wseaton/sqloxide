@@ -10,7 +10,7 @@ use sqlparser::ast::{
 };
 
 // Refactored function for handling depythonization
-fn depythonize_query(parsed_query: &PyAny) -> Result<Vec<Statement>, PyErr> {
+fn depythonize_query(parsed_query: &Bound<'_, PyAny>) -> Result<Vec<Statement>, PyErr> {
     match pythonize::depythonize(parsed_query) {
         Ok(statements) => Ok(statements),
         Err(e) => {
@@ -27,7 +27,7 @@ where
     T: Sized + Serialize,
 {
     match pythonize::pythonize(py, &output) {
-        Ok(p) => Ok(p),
+        Ok(p) => Ok(p.into()),
         Err(e) => {
             let msg = e.to_string();
             Err(PyValueError::new_err(format!(
@@ -39,7 +39,7 @@ where
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query)")]
-pub fn extract_relations(py: Python, parsed_query: &PyAny) -> PyResult<PyObject> {
+pub fn extract_relations(py: Python, parsed_query: &Bound<'_, PyAny>) -> PyResult<PyObject> {
     let statements = depythonize_query(parsed_query)?;
 
     let mut relations = Vec::new();
@@ -55,7 +55,7 @@ pub fn extract_relations(py: Python, parsed_query: &PyAny) -> PyResult<PyObject>
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query, func)")]
-pub fn mutate_relations(_py: Python, parsed_query: &PyAny, func: &PyAny) -> PyResult<Vec<String>> {
+pub fn mutate_relations(_py: Python, parsed_query: &Bound<'_, PyAny>, func: &Bound<'_, PyAny>) -> PyResult<Vec<String>> {
     let mut statements = depythonize_query(parsed_query)?;
 
     for statement in &mut statements {
@@ -85,8 +85,8 @@ pub fn mutate_relations(_py: Python, parsed_query: &PyAny, func: &PyAny) -> PyRe
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query, func)")]
-pub fn mutate_expressions(py: Python, parsed_query: &PyAny, func: &PyAny) -> PyResult<Vec<String>> {
-    let mut statements = depythonize_query(parsed_query)?;
+pub fn mutate_expressions(py: Python, parsed_query: &Bound<'_, PyAny>, func: &Bound<'_, PyAny>) -> PyResult<Vec<String>> {
+    let mut statements: Vec<Statement> = depythonize_query(parsed_query)?;
 
     for statement in &mut statements {
         visit_expressions_mut(statement, |expr| {
@@ -110,7 +110,7 @@ pub fn mutate_expressions(py: Python, parsed_query: &PyAny, func: &PyAny) -> PyR
                 }
             };
 
-            *expr = match pythonize::depythonize(func_result) {
+            *expr = match pythonize::depythonize(&func_result) {
                 Ok(val) => val,
                 Err(e) => {
                     let msg = e.to_string();
@@ -132,8 +132,8 @@ pub fn mutate_expressions(py: Python, parsed_query: &PyAny, func: &PyAny) -> PyR
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query)")]
-pub fn extract_expressions(py: Python, parsed_query: &PyAny) -> PyResult<PyObject> {
-    let statements = depythonize_query(parsed_query)?;
+pub fn extract_expressions(py: Python, parsed_query: &Bound<'_, PyAny>) -> PyResult<PyObject> {
+    let statements: Vec<Statement> = depythonize_query(parsed_query)?;
 
     let mut expressions = Vec::new();
     for statement in statements {

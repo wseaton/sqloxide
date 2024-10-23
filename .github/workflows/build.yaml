@@ -19,7 +19,7 @@ jobs:
           maturin-version: latest
           command: build
           manylinux: auto
-          args: --release --sdist -i 3.8 3.9 3.10 3.11 3.12
+          args: --release --sdist -i 3.8 3.9 3.10 3.11 3.12 3.13
       - uses: actions/upload-artifact@v4
         with:
           name: linux-wheels-${{ matrix.target }}
@@ -29,7 +29,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9, "3.10", "3.11", "3.12"]
+        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
@@ -50,6 +50,9 @@ jobs:
 
   windows-wheels:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
@@ -57,13 +60,15 @@ jobs:
           toolchain: nightly
           default: true
       - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: Build wheels
         run: |
           python -m pip install maturin
           maturin build --release
       - uses: actions/upload-artifact@v4
         with:
-          name: windows-wheels
+          name: windows-${{ matrix.python-version }}-wheel
           path: target/wheels
 
   push:
@@ -80,12 +85,18 @@ jobs:
       - run: mv ./linux-wheels-x86_64/* wheels
       - run: mv ./linux-wheels-i686/* wheels
       - run: mv ./linux-wheels-aarch64/* wheels
+      - run: mv ./osx-3.13-wheel/* wheels
       - run: mv ./osx-3.12-wheel/* wheels
       - run: mv ./osx-3.11-wheel/* wheels
       - run: mv ./osx-3.10-wheel/* wheels
       - run: mv ./osx-3.9-wheel/* wheels
       - run: mv ./osx-3.8-wheel/* wheels
-      - run: mv ./windows-wheels/* wheels
+      - run: mv ./windows-3.13-wheel/* wheels
+      - run: mv ./windows-3.12-wheel/* wheels
+      - run: mv ./windows-3.11-wheel/* wheels
+      - run: mv ./windows-3.10-wheel/* wheels
+      - run: mv ./windows-3.9-wheel/* wheels
+      - run: mv ./windows-3.8-wheel/* wheels
 
 
       - name: Publish a Python distribution to PyPI
