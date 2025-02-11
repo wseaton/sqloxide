@@ -1,8 +1,8 @@
 benchmark: build
-    poetry run pytest tests/benchmark.py
+    uvx poetry run pytest tests/benchmark.py
 
 test: 
-    poetry run pytest tests/benchmark.py
+    uvx poetry run pytest tests/
 
 build:
-    poetry build
+    uvx poetry build

@@ -1,10 +1,11 @@
-[tool.poetry]
+[project]
 name = "sqloxide"
-version = "0.1.51"
+version = "0.1.54rc2"
+authors = [{ name = "Will Eaton", email= "<me@wseaton.com>" }]
 repository = "https://github.com/wseaton/sqloxide"
 license = "MIT"
 description = "Python bindings for sqlparser-rs"
-authors = ["Will Eaton <me@wseaton.com>"]
+requires-python = ">=3.7"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Rust",
@@ -13,12 +14,5 @@ classifiers = [
 ]
 
 [build-system]
-requires = ["maturin>=0.13,<0.14"]
+requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
-
-[project]
-name = "sqloxide"
-requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Rust",
-]
