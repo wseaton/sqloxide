@@ -19,17 +19,31 @@ jobs:
           maturin-version: latest
           command: build
           manylinux: auto
-          args: --release --sdist -i 3.8 3.9 3.10 3.11 3.12 3.13
+          args: --release --sdist -i 3.7 3.8 3.9 3.10 3.11 3.12 3.13
       - uses: actions/upload-artifact@v4
         with:
           name: linux-wheels-${{ matrix.target }}
           path: target/wheels/
 
   osx-wheels:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
+        include:
+          - os: macos-13
+            python-version: 3.7
+          - os: macos-latest
+            python-version: 3.8
+          - os: macos-latest
+            python-version: 3.9
+          - os: macos-latest
+            python-version: "3.10"
+          - os: macos-latest
+            python-version: "3.11"
+          - os: macos-latest
+            python-version: "3.12"
+          - os: macos-latest
+            python-version: "3.13"
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
@@ -39,7 +53,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Build wheels
+      - name: Build wheels for Python 3.7
+        if: matrix.python-version == '3.7'
+        run: |
+          rustup target add aarch64-apple-darwin
+          python3 -m pip install maturin
+          maturin build --release --target universal2-apple-darwin
+      - name: Build wheels for other Python versions
+        if: matrix.python-version != '3.7'
         run: |
           python3 -m pip install maturin
           maturin build --release
@@ -52,7 +73,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
+        python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
@@ -91,12 +112,14 @@ jobs:
       - run: mv ./osx-3.10-wheel/* wheels
       - run: mv ./osx-3.9-wheel/* wheels
       - run: mv ./osx-3.8-wheel/* wheels
+      - run: mv ./osx-3.7-wheel/* wheels
       - run: mv ./windows-3.13-wheel/* wheels
       - run: mv ./windows-3.12-wheel/* wheels
       - run: mv ./windows-3.11-wheel/* wheels
       - run: mv ./windows-3.10-wheel/* wheels
       - run: mv ./windows-3.9-wheel/* wheels
       - run: mv ./windows-3.8-wheel/* wheels
+      - run: mv ./windows-3.7-wheel/* wheels
 
 
       - name: Publish a Python distribution to PyPI
