@@ -6,7 +6,7 @@ use pyo3::prelude::*;
 use serde::Serialize;
 
 use sqlparser::ast::{
-    Statement, {visit_expressions, visit_expressions_mut, visit_relations, visit_relations_mut},
+    Statement, ObjectNamePart, {visit_expressions, visit_expressions_mut, visit_relations, visit_relations_mut},
 };
 
 // Refactored function for handling depythonization
@@ -61,7 +61,8 @@ pub fn mutate_relations(_py: Python, parsed_query: &Bound<'_, PyAny>, func: &Bou
     for statement in &mut statements {
         visit_relations_mut(statement, |table| {
             for section in &mut table.0 {
-                let val = match func.call1((section.value.clone(),)) {
+                let ObjectNamePart::Identifier(ident) = section;
+                let val = match func.call1((ident.value.clone(),)) {
                     Ok(val) => val,
                     Err(e) => {
                         let msg = e.to_string();
@@ -71,7 +72,7 @@ pub fn mutate_relations(_py: Python, parsed_query: &Bound<'_, PyAny>, func: &Bou
                     }
                 };
 
-                section.value = val.to_string();
+                ident.value = val.to_string();
             }
             ControlFlow::Continue(())
         });
