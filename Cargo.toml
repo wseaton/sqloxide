@@ -1,6 +1,6 @@
 [package]
 name = "sqloxide"
-version = "0.1.56"
+version = "0.1.56-rc.1"
 authors = ["Will Eaton <me@wseaton.com>"]
 edition = "2021"
 
