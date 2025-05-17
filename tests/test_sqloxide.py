@@ -43,8 +43,14 @@ def test_extract_relations():
     ast = parse_sql(sql=SQL, dialect="ansi")
 
     assert extract_relations(parsed_query=ast)[0][0] == {
-        "value": "employee",
-        "quote_style": None,
+        "Identifier": {
+            "value": "employee",
+            "quote_style": None,
+            "span": {
+                "start": {"line": 4, "column": 10},
+                "end": {"line": 4, "column": 18},
+            },
+        }
     }
 
 
@@ -54,7 +60,7 @@ def test_mutate_relations():
 
     ast = parse_sql(sql=SQL, dialect="ansi")
     assert mutate_relations(parsed_query=ast, func=func) == [
-        'SELECT employee.first_name, employee.last_name, c.start_time, c.end_time, call_outcome.outcome_text FROM employee JOIN "call2"."call2"."call2" AS c ON c.employee_id = employee.id JOIN call2_outcome ON c.call_outcome_id = call_outcome.id ORDER BY c.start_time ASC'
+        'SELECT employee.first_name, employee.last_name, c.start_time, c.end_time, call_outcome.outcome_text FROM employee INNER JOIN "call2"."call2"."call2" AS c ON c.employee_id = employee.id INNER JOIN call2_outcome ON c.call_outcome_id = call_outcome.id ORDER BY c.start_time ASC'
     ]
 
 
@@ -81,7 +87,7 @@ def test_mutate_expressions():
     ast = parse_sql(sql=SQL, dialect="ansi")
     result = mutate_expressions(parsed_query=ast, func=func)
     assert result == [
-        'SELECT EMPLOYEE.FIRST_NAME, EMPLOYEE.LAST_NAME, C.START_TIME, C.END_TIME, CALL_OUTCOME.OUTCOME_TEXT FROM employee JOIN "call"."call"."call" AS c ON C.EMPLOYEE_ID = EMPLOYEE.ID JOIN call_outcome ON C.CALL_OUTCOME_ID = CALL_OUTCOME.ID ORDER BY C.START_TIME ASC'
+        'SELECT EMPLOYEE.FIRST_NAME, EMPLOYEE.LAST_NAME, C.START_TIME, C.END_TIME, CALL_OUTCOME.OUTCOME_TEXT FROM employee INNER JOIN "call"."call"."call" AS c ON C.EMPLOYEE_ID = EMPLOYEE.ID INNER JOIN call_outcome ON C.CALL_OUTCOME_ID = CALL_OUTCOME.ID ORDER BY C.START_TIME ASC'
     ]
 
 
@@ -93,7 +99,21 @@ def test_extract_expressions():
 
     assert exprs[0] == {
         "CompoundIdentifier": [
-            {"value": "employee", "quote_style": None},
-            {"value": "first_name", "quote_style": None},
+            {
+                "value": "employee",
+                "quote_style": None,
+                "span": {
+                    "end": {"column": 20, "line": 2},
+                    "start": {"column": 12, "line": 2},
+                },
+            },
+            {
+                "value": "first_name",
+                "quote_style": None,
+                "span": {
+                    "end": {"column": 31, "line": 2},
+                    "start": {"column": 21, "line": 2},
+                },
+            },
         ]
     }

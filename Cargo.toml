@@ -1,6 +1,6 @@
 [package]
 name = "sqloxide"
-version = "0.1.54"
+version = "0.1.56"
 authors = ["Will Eaton <me@wseaton.com>"]
 edition = "2021"
 
@@ -17,5 +17,5 @@ version = "0.22"
 features = ["extension-module"]
 
 [dependencies.sqlparser]
-version = "0.54.0"
+version = "0.56.0"
 features = ["serde", "visitor"]
