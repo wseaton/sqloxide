@@ -1,9 +1,12 @@
-name: publish-pypi
+name: build-wheels
 
 on:
   push:
+    branches:
+      - main
     tags:
-       - 'v*'
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
   linux-wheels:
@@ -92,7 +95,7 @@ jobs:
           name: windows-${{ matrix.python-version }}-wheel
           path: target/wheels
 
-  push:
+  collect-wheels:
     needs: [osx-wheels, windows-wheels, linux-wheels]
     runs-on: ubuntu-latest
     steps:
@@ -121,8 +124,24 @@ jobs:
       - run: mv ./windows-3.8-wheel/* wheels
       - run: mv ./windows-3.7-wheel/* wheels
 
+      - name: Upload wheels as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-wheels
+          path: wheels/
+          retention-days: 7
 
-      - name: Publish a Python distribution to PyPI
+  publish-pypi:
+    needs: [collect-wheels]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: all-wheels
+          path: wheels/
+
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI }}
