@@ -1,1 +1,1 @@
-from .sqloxide import *
+from .sqloxide import *  # noqa: F403

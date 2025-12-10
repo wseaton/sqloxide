@@ -148,7 +148,7 @@ class Select(TypedDict("Select", {"from": list[TableWithJoins]})):
 class Insert(TypedDict("Insert", {"or": Any | None})):
     """
     An INSERT statement.
-    
+
     See https://docs.rs/sqlparser/0.51.0/sqlparser/ast/struct.Insert.html
     """
 
@@ -163,7 +163,9 @@ class Insert(TypedDict("Insert", {"or": Any | None})):
     partitioned: Any | None
     after_columns: list[Any]
     table: bool
-    on: dict[str, Any] | None  # e.g. {"OnConflict": {"conflict_target": None, "action": "DoNothing"}},
+    on: (
+        dict[str, Any] | None
+    )  # e.g. {"OnConflict": {"conflict_target": None, "action": "DoNothing"}},
     returning: Any | None
     replace_into: bool
     priority: Any | None

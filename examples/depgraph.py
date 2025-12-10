@@ -4,8 +4,6 @@ of .sql files. Renders via graphviz.
 """
 
 import argparse
-import json
-import os
 from glob import glob
 from typing import List
 
@@ -15,6 +13,7 @@ from graphviz import Digraph
 parser = argparse.ArgumentParser()
 parser.add_argument("--path", "-p", type=str, help="The path to process queries for.")
 parser.add_argument("--dialect", "-d", type=str, help="The dialect to use.")
+
 
 def get_sql_files(path: str) -> List[str]:
     return glob(path + "/**/*.sql")
@@ -31,7 +30,6 @@ def get_key_recursive(search_dict, field):
     fields_found = []
 
     for key, value in search_dict.items():
-
         if key == field:
             fields_found.append(value)
 
@@ -51,7 +49,6 @@ def get_key_recursive(search_dict, field):
 
 
 def get_tables_in_query(SQL: str, dialect: str) -> List[str]:
-
     res = sqloxide.parse_sql(sql=SQL, dialect=dialect)
     tables = get_key_recursive(res[0]["Query"], "Table")
 
@@ -64,11 +61,10 @@ def get_tables_in_query(SQL: str, dialect: str) -> List[str]:
 
 
 if __name__ == "__main__":
-
     args = parser.parse_args()
 
     files = get_sql_files(args.path)
-    print(f'Parsing using dialect: {args.dialect}')
+    print(f"Parsing using dialect: {args.dialect}")
 
     result_dict = dict()
 
@@ -87,7 +83,7 @@ if __name__ == "__main__":
     dot = Digraph(engine="dot")
     dot.attr(rankdir="LR")
     dot.attr(splines="ortho")
-    dot.node_attr['shape'] = 'box'
+    dot.node_attr["shape"] = "box"
 
     for view, tables in result_dict.items():
         view = view[:-4]
