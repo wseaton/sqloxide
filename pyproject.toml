@@ -13,6 +13,19 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 
+[dependency-groups]
+dev = [
+    # build
+    "maturin",
+    # test
+    "pytest",
+    "pytest-benchmark",
+    "pytest-subtests",
+    # benchmark
+    "sqlglot",
+    "sqlparse",
+]
+
 [build-system]
 requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"

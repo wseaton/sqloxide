@@ -1,8 +1,12 @@
-benchmark: build
-    uvx poetry run pytest tests/benchmark.py
+benchmark:
+    uv sync
+    uv run maturin develop --release
+    uv run pytest tests/benchmark.py
 
-test: 
-    uvx poetry run pytest tests/
+test:
+    uv sync
+    uv run maturin develop
+    uv run pytest tests/
 
 build:
-    uvx poetry build
+    uv run maturin build --release
