@@ -6,7 +6,8 @@ use pyo3::prelude::*;
 use serde::Serialize;
 
 use sqlparser::ast::{
-    Statement, ObjectNamePart, {visit_expressions, visit_expressions_mut, visit_relations, visit_relations_mut},
+    ObjectNamePart, Statement,
+    {visit_expressions, visit_expressions_mut, visit_relations, visit_relations_mut},
 };
 
 // Refactored function for handling depythonization
@@ -39,12 +40,12 @@ where
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query)")]
-pub fn extract_relations(py: Python, parsed_query: &Bound<'_, PyAny>) -> PyResult<PyObject> {
+pub fn extract_relations(py: Python, parsed_query: &Bound<'_, PyAny>) -> PyResult<Py<PyAny>> {
     let statements = depythonize_query(parsed_query)?;
 
     let mut relations = Vec::new();
     for statement in statements {
-        visit_relations(&statement, |relation| {
+        let _ = visit_relations(&statement, |relation| {
             relations.push(relation.clone());
             ControlFlow::<()>::Continue(())
         });
@@ -55,13 +56,19 @@ pub fn extract_relations(py: Python, parsed_query: &Bound<'_, PyAny>) -> PyResul
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query, func)")]
-pub fn mutate_relations(_py: Python, parsed_query: &Bound<'_, PyAny>, func: &Bound<'_, PyAny>) -> PyResult<Vec<String>> {
+pub fn mutate_relations(
+    _py: Python,
+    parsed_query: &Bound<'_, PyAny>,
+    func: &Bound<'_, PyAny>,
+) -> PyResult<Vec<String>> {
     let mut statements = depythonize_query(parsed_query)?;
 
     for statement in &mut statements {
-        visit_relations_mut(statement, |table| {
+        let _ = visit_relations_mut(statement, |table| {
             for section in &mut table.0 {
-                let ObjectNamePart::Identifier(ident) = section;
+                let ObjectNamePart::Identifier(ident) = section else {
+                    continue;
+                };
                 let val = match func.call1((ident.value.clone(),)) {
                     Ok(val) => val,
                     Err(e) => {
@@ -86,11 +93,15 @@ pub fn mutate_relations(_py: Python, parsed_query: &Bound<'_, PyAny>, func: &Bou
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query, func)")]
-pub fn mutate_expressions(py: Python, parsed_query: &Bound<'_, PyAny>, func: &Bound<'_, PyAny>) -> PyResult<Vec<String>> {
+pub fn mutate_expressions(
+    py: Python,
+    parsed_query: &Bound<'_, PyAny>,
+    func: &Bound<'_, PyAny>,
+) -> PyResult<Vec<String>> {
     let mut statements: Vec<Statement> = depythonize_query(parsed_query)?;
 
     for statement in &mut statements {
-        visit_expressions_mut(statement, |expr| {
+        let _ = visit_expressions_mut(statement, |expr| {
             let converted_expr = match pythonize::pythonize(py, expr) {
                 Ok(val) => val,
                 Err(e) => {
@@ -133,12 +144,12 @@ pub fn mutate_expressions(py: Python, parsed_query: &Bound<'_, PyAny>, func: &Bo
 
 #[pyfunction]
 #[pyo3(text_signature = "(parsed_query)")]
-pub fn extract_expressions(py: Python, parsed_query: &Bound<'_, PyAny>) -> PyResult<PyObject> {
+pub fn extract_expressions(py: Python, parsed_query: &Bound<'_, PyAny>) -> PyResult<Py<PyAny>> {
     let statements: Vec<Statement> = depythonize_query(parsed_query)?;
 
     let mut expressions = Vec::new();
     for statement in statements {
-        visit_expressions(&statement, |expr| {
+        let _ = visit_expressions(&statement, |expr| {
             expressions.push(expr.clone());
             ControlFlow::<()>::Continue(())
         });

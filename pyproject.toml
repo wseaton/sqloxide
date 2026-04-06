@@ -1,11 +1,10 @@
 [project]
 name = "sqloxide"
-version = "0.1.56"
 authors = [{ name = "Will Eaton", email= "<me@wseaton.com>" }]
-repository = "https://github.com/wseaton/sqloxide"
+dynamic = ["version"]
 license = "MIT"
 description = "Python bindings for sqlparser-rs"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Rust",
@@ -13,6 +12,17 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 
+[project.urls]
+Repository = "https://github.com/wseaton/sqloxide"
+
 [build-system]
 requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-benchmark>=5.0",
+    "maturin>=1.0,<2.0",
+    "ty>=0.0.1a1",
+]

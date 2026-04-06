@@ -7,7 +7,6 @@ use pythonize::PythonizeError;
 
 use sqlparser::ast::Statement;
 use sqlparser::dialect::dialect_from_str;
-use sqlparser::dialect::*;
 use sqlparser::parser::Parser;
 
 mod visitor;
@@ -19,11 +18,12 @@ use visitor::{extract_expressions, extract_relations, mutate_expressions, mutate
 /// Available `dialects`: https://github.com/sqlparser-rs/sqlparser-rs/blob/main/src/dialect/mod.rs#L189-L206
 #[pyfunction]
 #[pyo3(text_signature = "(sql, dialect)")]
-fn parse_sql(py: Python, sql: String, dialect: String) -> PyResult<PyObject> {
-    let chosen_dialect = dialect_from_str(dialect).unwrap_or_else(|| {
-        println!("The dialect you chose was not recognized, falling back to 'generic'");
-        Box::new(GenericDialect {})
-    });
+fn parse_sql(py: Python, sql: String, dialect: String) -> PyResult<Py<PyAny>> {
+    let chosen_dialect = dialect_from_str(&dialect).ok_or_else(|| {
+        PyValueError::new_err(format!(
+            "Unrecognized dialect '{dialect}'. See sqlparser-rs docs for supported dialects."
+        ))
+    })?;
     let parse_result = Parser::parse_sql(&*chosen_dialect, &sql);
 
     let output = match parse_result {
@@ -68,7 +68,6 @@ fn restore_ast(_py: Python, ast: &Bound<'_, PyAny>) -> PyResult<Vec<String>> {
 fn sqloxide(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(parse_sql, m)?)?;
     m.add_function(wrap_pyfunction!(restore_ast, m)?)?;
-    // TODO: maybe refactor into seperate module
     m.add_function(wrap_pyfunction!(extract_relations, m)?)?;
     m.add_function(wrap_pyfunction!(mutate_relations, m)?)?;
     m.add_function(wrap_pyfunction!(extract_expressions, m)?)?;

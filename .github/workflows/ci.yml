@@ -12,29 +12,41 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
+      - uses: actions/checkout@v4
 
-      - name: Install rust toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          override: true
           components: rustfmt, clippy
 
       - name: Lint with rustfmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
+        run: cargo fmt -- --check
 
       - name: Lint with clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-targets --all-features
+        run: cargo clippy --all-targets --all-features
 
       - name: Test with cargo
-        uses: actions-rs/cargo@v1.0.1
+        run: cargo test
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.12", "3.13", "3.13t", "3.14", "3.14t"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: actions/setup-python@v5
         with:
-          command: test
-          toolchain: stable
+          python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Build and test
+        run: |
+          uv sync
+          uv run maturin develop --release
+          uv run pytest tests/test_sqloxide.py -v

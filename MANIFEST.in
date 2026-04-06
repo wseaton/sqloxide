@@ -1,3 +1,0 @@
-include Cargo.toml
-include build.py
-recursive-include src *

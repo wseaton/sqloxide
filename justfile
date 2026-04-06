@@ -1,8 +1,12 @@
-benchmark: build
-    uvx poetry run pytest tests/benchmark.py
+dev:
+    uv sync
+    uv run maturin develop --release
 
-test: 
-    uvx poetry run pytest tests/
+check: dev
+    uv run ty check tests/test_sqloxide.py tests/test_stubs.py
 
-build:
-    uvx poetry build
+test: dev
+    uv run pytest tests/test_sqloxide.py -v
+
+benchmark: dev
+    uv run pytest tests/benchmark.py

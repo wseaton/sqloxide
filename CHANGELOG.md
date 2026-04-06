@@ -1,3 +1,19 @@
+# 0.61.0
+
+- upgrade to sqlparser-rs 0.61.0, pyo3 0.28, pythonize 0.28
+- add free-threaded python (3.13t, 3.14t) wheel builds
+- add python 3.14 support
+- drop python 3.7 and 3.8 (EOL, incompatible with pyo3 0.28)
+- new versioning scheme: minor version now tracks sqlparser-rs minor (e.g. sqloxide 0.61.0 wraps sqlparser 0.61)
+- switch dev tooling from poetry to uv
+- version is now sourced from Cargo.toml only (`dynamic` in pyproject.toml)
+
+### breaking changes from sqlparser-rs 0.57-0.61
+
+- several `Statement` variants (e.g. `Update`, `CreateView`, `Truncate`, `Grant`, `Revoke`) changed from inline struct variants to tuple-struct wrappers. the serde/JSON shape of these statements will differ from 0.1.56.
+- `ObjectNamePart` now has a `Function` variant in addition to `Identifier` (snowflake `IDENTIFIER(...)` support)
+- table alias rendering dropped the explicit `AS` keyword (e.g. `JOIN t AS a` now renders as `JOIN t a`)
+
 # 0.1.56
 
 - Upgrade to sqlparser-rs 0.56.0
