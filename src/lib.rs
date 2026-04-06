@@ -19,7 +19,7 @@ use visitor::{extract_expressions, extract_relations, mutate_expressions, mutate
 /// Available `dialects`: https://github.com/sqlparser-rs/sqlparser-rs/blob/main/src/dialect/mod.rs#L189-L206
 #[pyfunction]
 #[pyo3(text_signature = "(sql, dialect)")]
-fn parse_sql(py: Python, sql: String, dialect: String) -> PyResult<PyObject> {
+fn parse_sql(py: Python, sql: String, dialect: String) -> PyResult<Py<PyAny>> {
     let chosen_dialect = dialect_from_str(dialect).unwrap_or_else(|| {
         println!("The dialect you chose was not recognized, falling back to 'generic'");
         Box::new(GenericDialect {})
