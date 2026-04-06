@@ -15,15 +15,33 @@
 
 ---
 
-`sqloxide` wraps rust bindings for [sqlparser-rs](https://github.com/ballista-compute/sqlparser-rs) into a python package using `pyO3`.
+`sqloxide` wraps rust bindings for [sqlparser-rs](https://github.com/sqlparser-rs/sqlparser-rs) into a python package using [PyO3](https://pyo3.rs).
 
 The original goal of this project was to have a very fast, efficient, and accurate SQL parser I could use for building data lineage graphs across large code bases (think hundreds of auto-generated .sql files). Most existing sql parsing approaches for python are either very slow or not accurate (especially in regards to deeply nested queries, sub-selects and/or table aliases). Looking to the rust community for support, I found the excellent `sqlparser-rs` crate which is quite easy to wrap in python code.
 
+## Free-threaded Python Support
+
+As of v0.61.0, `sqloxide` ships wheels for free-threaded Python (3.13t, 3.14t). This means you can parse SQL from multiple threads in parallel with the GIL disabled, no locks needed:
+
+```python
+import concurrent.futures
+from sqloxide import parse_sql
+
+queries = [f"SELECT col_{i} FROM table_{i}" for i in range(100)]
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+    results = list(pool.map(lambda q: parse_sql(sql=q, dialect="generic"), queries))
+```
+
+Install a free-threaded Python with [uv](https://docs.astral.sh/uv/):
+
+```sh
+uv python install 3.13t
+```
+
 ## Installation
 
-The project provides `manylinux2014` wheels on pypi so it should be compatible with most linux distributions. Native wheels are also now available for OSX and Windows.
-
-To install from pypi:
+Wheels are available on PyPI for Linux (x86_64, i686, aarch64), macOS (x86_64, ARM), and Windows, covering Python 3.9 through 3.14 (including free-threaded 3.13t and 3.14t).
 
 ```sh
 pip install sqloxide
@@ -170,7 +188,7 @@ We run 4 benchmarks, comparing to some python native sql parsing libraries:
 To run them on your machine:
 
 ```
-poetry run pytest tests/benchmark.py
+just benchmark
 ```
 
 ```
@@ -189,11 +207,13 @@ test_mozsqlparser     2,793.8400 (94.13)    12,358.7790 (245.07)   3,091.8519 (1
 The `depgraph` example reads a bunch of `.sql` files from disk using glob, and builds a dependency graph of all of the objects using graphviz.
 
 ```
-poetry run python ./examples/depgraph.py --path {path/to/folder/with/queries}
+uv run python ./examples/depgraph.py --path {path/to/folder/with/queries}
 ```
 
 ## Develop
 
-1) Install `rustup`
+1) Install [rustup](https://rustup.rs/) and [uv](https://docs.astral.sh/uv/)
 
-2) `poetry install` will automatically create the venv, compile the package and install it into the venv via the build script.
+2) `just dev` will sync dependencies, compile the native extension, and install it into the venv.
+
+3) `just test` to run the test suite, `just check` to run the type checker.
