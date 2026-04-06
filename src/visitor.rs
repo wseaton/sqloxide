@@ -64,7 +64,7 @@ pub fn mutate_relations(
     let mut statements = depythonize_query(parsed_query)?;
 
     for statement in &mut statements {
-        let _ = visit_relations_mut(statement, |table| {
+        if let ControlFlow::Break(err) = visit_relations_mut(statement, |table| {
             for section in &mut table.0 {
                 let ObjectNamePart::Identifier(ident) = section else {
                     continue;
@@ -74,7 +74,7 @@ pub fn mutate_relations(
                     Err(e) => {
                         let msg = e.to_string();
                         return ControlFlow::Break(PyValueError::new_err(format!(
-                            "Python object serialization failed.\n\t{msg}"
+                            "Python callback failed.\n\t{msg}"
                         )));
                     }
                 };
@@ -82,7 +82,9 @@ pub fn mutate_relations(
                 ident.value = val.to_string();
             }
             ControlFlow::Continue(())
-        });
+        }) {
+            return Err(err);
+        }
     }
 
     Ok(statements
@@ -101,7 +103,7 @@ pub fn mutate_expressions(
     let mut statements: Vec<Statement> = depythonize_query(parsed_query)?;
 
     for statement in &mut statements {
-        let _ = visit_expressions_mut(statement, |expr| {
+        if let ControlFlow::Break(err) = visit_expressions_mut(statement, |expr| {
             let converted_expr = match pythonize::pythonize(py, expr) {
                 Ok(val) => val,
                 Err(e) => {
@@ -117,7 +119,7 @@ pub fn mutate_expressions(
                 Err(e) => {
                     let msg = e.to_string();
                     return ControlFlow::Break(PyValueError::new_err(format!(
-                        "Calling python function failed.\n\t{msg}"
+                        "Python callback failed.\n\t{msg}"
                     )));
                 }
             };
@@ -133,7 +135,9 @@ pub fn mutate_expressions(
             };
 
             ControlFlow::Continue(())
-        });
+        }) {
+            return Err(err);
+        }
     }
 
     Ok(statements

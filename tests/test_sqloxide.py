@@ -96,6 +96,24 @@ def test_mutate_expressions():
     ]
 
 
+def test_mutate_relations_propagates_errors():
+    def func(x):
+        raise RuntimeError("kaboom")
+
+    ast = parse_sql(sql=SQL, dialect="ansi")
+    with pytest.raises(ValueError, match=r"Python callback failed.\n\tRuntimeError: kaboom"):
+        mutate_relations(parsed_query=ast, func=func)
+
+
+def test_mutate_expressions_propagates_errors():
+    def func(x):
+        raise RuntimeError("kaboom")
+
+    ast = parse_sql(sql=SQL, dialect="ansi")
+    with pytest.raises(ValueError, match=r"Python callback failed.\n\tRuntimeError: kaboom"):
+        mutate_expressions(parsed_query=ast, func=func)
+
+
 def test_extract_expressions():
     ast = parse_sql(sql=SQL, dialect="ansi")
     exprs = extract_expressions(parsed_query=ast)
