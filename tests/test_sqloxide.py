@@ -39,6 +39,11 @@ def test_throw_exception():
         _ast = parse_sql(sql=sql, dialect="ansi")[0]
 
 
+def test_invalid_dialect():
+    with pytest.raises(ValueError, match=r"Unrecognized dialect 'not_a_dialect'"):
+        parse_sql(sql="SELECT 1", dialect="not_a_dialect")  # ty: ignore[invalid-argument-type]
+
+
 def test_extract_relations():
     ast = parse_sql(sql=SQL, dialect="ansi")
 
