@@ -2,18 +2,6 @@
 
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/wseaton/sqloxide/ci.yml)](https://github.com/wseaton/sqloxide/actions/workflows/ci.yml)[![Downloads](https://static.pepy.tech/badge/sqloxide)](https://pepy.tech/project/sqloxide)
 
----
-
-- [sqloxide](#sqloxide)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Parsing](#parsing)
-    - [AST Rewrites](#ast-rewrites)
-  - [Benchmarks](#benchmarks)
-  - [Example](#example)
-  - [Develop](#develop)
-
----
 
 `sqloxide` wraps rust bindings for [sqlparser-rs](https://github.com/sqlparser-rs/sqlparser-rs) into a python package using [PyO3](https://pyo3.rs).
 
