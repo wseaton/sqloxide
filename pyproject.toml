@@ -8,6 +8,7 @@ requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Rust",
+    "Programming Language :: Python :: 3.15",
     "Topic :: Database",
     "License :: OSI Approved :: MIT License",
 ]
