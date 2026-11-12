@@ -13,7 +13,7 @@ permissions: {}
 
 jobs:
   linux-wheels:
-    runs-on: ${{ matrix.target == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     permissions:
       contents: read
     strategy:
@@ -170,10 +170,27 @@ jobs:
           path: wheels/
           retention-days: 7
 
-  publish-pypi:
-    needs: [collect-wheels]
+  release-please:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release
+
+  publish-pypi:
+    needs: [collect-wheels, release-please]
+    runs-on: ubuntu-latest
+    if: >-
+      ${{
+        !cancelled()
+        && needs.collect-wheels.result == 'success'
+        && (startsWith(github.ref, 'refs/tags/v') || needs.release-please.outputs.release_created == 'true')
+      }}
     environment:
       name: pypi
       url: https://pypi.org/p/sqloxide
